@@ -29,6 +29,7 @@ deployment:
         else
           git checkout --orphan release
         fi
+      - git rm --cached -r .
       - git add -f main.pdf
       - git commit -m "[ci skip] Build pdf $CIRCLE_SHA1"
       - git push -f origin release
