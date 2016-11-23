@@ -1,0 +1,34 @@
+general:
+  branches:
+    only:
+      - master
+
+machine:
+  timezone:
+    Asia/Tokyo
+  services:
+    - docker
+
+dependencies:
+  pre:
+    - docker pull miyukki/docker-texlive
+    - git config --global user.email 'miyukki@sfc.wide.ad.jp'
+    - git config --global user.name 'Yusei Yamanaka'
+
+test:
+  override:
+    - exec docker run -i --net=none -v $(pwd):/data miyukki/docker-texlive /bin/sh -c "make"
+
+deployment:
+  release:
+    branch: master
+    commands:
+      - |
+        if git branch --list | grep -q release; then
+          git checkout --orphan release
+        else
+          git checkout release
+        fi
+      - git add main.pdf
+      - git commit -m "[ci skip] Build pdf $CIRCLE_SHA1"
+      - git push -f origin release
