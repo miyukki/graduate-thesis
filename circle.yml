@@ -25,9 +25,9 @@ deployment:
     commands:
       - |
         if git branch --list | grep -q release; then
-          git checkout --orphan release
-        else
           git checkout release
+        else
+          git checkout --orphan release
         fi
       - git add main.pdf
       - git commit -m "[ci skip] Build pdf $CIRCLE_SHA1"
