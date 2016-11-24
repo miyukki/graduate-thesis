@@ -12,12 +12,15 @@ machine:
 dependencies:
   pre:
     - docker pull miyukki/docker-texlive
+    - docker pull miyukki/redpen:1.7.6
     - git config --global user.email 'miyukki@sfc.wide.ad.jp'
     - git config --global user.name 'Yusei Yamanaka'
 
 test:
   override:
     - exec docker run -i --net=none -v $(pwd):/data miyukki/docker-texlive /bin/sh -c "make"
+  post:
+    - exec docker run -i --net=none -v $(pwd):/data miyukki/redpen:1.7.6 find . -name "*.tex" -exec /bin/sh -c 'redpen {} > {}.out' \;
 
 deployment:
   release:
