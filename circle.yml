@@ -23,13 +23,16 @@ deployment:
   release:
     branch: master
     commands:
+      - mv main.pdf /tmp/main.pdf
       - |
-        if git branch --list | grep -q release; then
-          git checkout release
+        if git ls-remote origin | grep -q refs/heads/release; then
+          git fetch
+          git checkout -b release origin/release
         else
           git checkout --orphan release
+          git rm --cached -r .
         fi
-      - git rm --cached -r .
+      - cp -f /tmp/main.pdf main.pdf
       - git add -f main.pdf
       - git commit -m "[ci skip] Build pdf $CIRCLE_SHA1"
       - git push -f origin release
