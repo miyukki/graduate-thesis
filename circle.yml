@@ -20,7 +20,8 @@ test:
   override:
     - exec docker run -i --net=none -v $(pwd):/data miyukki/docker-texlive /bin/sh -c "make"
   post:
-    - exec docker run -i --net=none -v $(pwd):/data -v $CIRCLE_ARTIFACTS:/artifacts miyukki/redpen:1.7.6 find . -name "*.tex" -exec /bin/sh -c 'redpen {} > /artifacts/{}.out' \;
+    - mkdir $CIRCLE_ARTIFACTS/section
+    - exec docker run -i --net=none -v $(pwd):/data -v $CIRCLE_ARTIFACTS:/artifacts miyukki/redpen:1.7.6 find . -name "*.tex" -exec /bin/sh -c 'redpen {} > /artifacts/{}.redpen.txt' \;
 
 deployment:
   release:
