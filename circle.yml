@@ -38,5 +38,5 @@ deployment:
         fi
       - cp -f /tmp/main.pdf main.pdf
       - git add -f main.pdf
-      - git commit -m "[ci skip] Build pdf $CIRCLE_SHA1"
+      - git commit -m "[ci skip] Build pdf $(git log $CIRCLE_BRANCH -1 --oneline)"
       - git push -f origin release
