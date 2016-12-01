@@ -28,6 +28,7 @@ deployment:
     branch: master
     commands:
       - mv main.pdf /tmp/main.pdf
+      - mv main-binder.pdf /tmp/main-binder.pdf
       - |
         if git ls-remote origin | grep -q refs/heads/release; then
           git fetch
@@ -37,6 +38,7 @@ deployment:
           git rm --cached -r .
         fi
       - cp -f /tmp/main.pdf main.pdf
-      - git add -f main.pdf
+      - cp -f /tmp/main-binder.pdf main-binder.pdf
+      - git add -f main.pdf main-binder.pdf
       - git commit -m "[ci skip] Build pdf $(git log $CIRCLE_BRANCH -1 --oneline)"
       - git push -f origin release

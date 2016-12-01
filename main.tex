@@ -16,8 +16,8 @@
 \japanesetrue  % 論文全体を日本語で書く（英語で書くならコメントアウト）
 
 \ifjapanese
-  \documentclass[a4j,twoside,openright,11pt]{jreport} % 両面印刷の場合。余白を綴じ側に作って右起こし。
-  %\documentclass[a4j,11pt]{jreport}                  % 片面印刷の場合。
+  % \documentclass[a4j,twoside,openright,11pt]{jreport} % 両面印刷の場合。余白を綴じ側に作って右起こし。 >>bindermode<<
+  \documentclass[a4j,11pt]{jreport}                  % 片面印刷の場合。 >>nobindermode<<
   \renewcommand{\bibname}{参考文献}
   \newcommand{\acknowledgmentname}{謝辞}
 \else
@@ -31,7 +31,7 @@
 \usepackage{url}
 \bibliographystyle{jplain}
 
-\bindermode  % バインダー用余白設定
+% \bindermode  % バインダー用余白設定 >>bindermode<<
 
 % 日本語情報（必要なら）
 \jclass  {卒業論文}                             % 論文種別
