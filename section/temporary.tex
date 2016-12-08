@@ -1,18 +1,53 @@
 \chapter{序論}
+\label{chap:introduction}
 \section{本論文の背景}
 \section{本論文が着目する課題}
 \section{本論文の構成}
 \section{本論文の目的}
 
 \chapter{映像伝送システム}
+\label{chap:video-transmission}
 \section{ビデオカメラ}
 \section{ディスプレイ}
+\section{インターレース}
+\section{色空間}
+
+映像では一般的に、RGBやYUV, YCbCr, YPbPrといった色空間で表現される。
+色差成分を間引くことにより、
+
+\section{帯域}
+
+帯域は次のようになる。
+
+表は次のように出力される（表\ref{tb:video-bandwidth}）。
+
+\begin{table}[htbp]
+  \caption{表の例}
+  \label{tb:video-bandwidth}
+  \begin{center}
+  \begin{tabular}{l|c|r}
+    \hline
+    解像度&フレームレート&色空間&ピクセルあたりのビット数&帯域\\\hline\hline
+    3840x2160&60P&X bit&XX Gbps\\\hline
+    3840x2160&30P&X bit&XX Gbps\\\hline
+    3840x2160&30P&RGB&X bit&XX Gbps\\\hline
+    3840x2160&30P&YUV 444&X bit&XX Gbps\\\hline
+    3840x2160&30P&YUV 422&X bit&XX Gbps\\\hline
+    3840x2160&30P&YUV 420&X bit&XX Gbps\\\hline
+    1920x1080&60P&RGB&X bit&XX Gbps\\\hline
+    1920x1080&60P&YUV&X bit&XX Gbps\\\hline
+    1920x1080&30P&X bit&XX Gbps\\\hline
+  \end{tabular}\end{center}
+\end{table}
+
+
 \section{インターフェース}
 \subsection{HDMI 1.4/2.0}
 \section{伝送手法}
 \section{まとめ}
 
 \chapter{ネットワークを活用した映像伝送}
+\label{chap:network-transmission}
 \section{仮説}
 \subsection{Ethernetを活用するメリット}
 \section{目的}
@@ -20,6 +55,7 @@
 \section{関連研究}
 
 \chapter{システムの設計・実装}
+\label{chap:implementation}
 \section{UoIP} % UHD over IP
 \section{システム構成}
 \section{ソフトウェアによる実装}
@@ -27,6 +63,7 @@
 \subsection{FPGAの回路設計}
 
 \chapter{評価}
+\label{chap:evaluation}
 \section{評価手法}
 \section{計測}
 \subsection{トラフィック}
@@ -35,6 +72,7 @@
 \section{考察}
 
 \chapter{結論}
+\label{chap:conclusion}
 \section{本研究のまとめ}
 \section{今後の課題と展望}
 
