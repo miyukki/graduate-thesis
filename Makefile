@@ -1,20 +1,27 @@
 all: build-pdf build-binder-pdf
 
-%.pdf:
-	platex    -kanji=utf8 $*
-	pbibtex   -kanji=utf8 $*
-	platex    -kanji=utf8 $*
-	platex    -kanji=utf8 $*
-	dvipdfmx  -p a4 $*
+build-pdf: main.tex
+	platex    -kanji=utf8 $(<:.tex=)
+	pbibtex   -kanji=utf8 $(<:.tex=)
+	platex    -kanji=utf8 $(<:.tex=)
+	platex    -kanji=utf8 $(<:.tex=)
+	dvipdfmx  -p a4 $(<:.tex=)
 
-build-pdf: main.pdf
-build-binder-pdf: main-binder.tex main-binder.pdf
-	rm main-binder.tex
-
-main-binder.tex:
-	cat main.tex | \
+main-binder.tex: main.tex
+	cat $< | \
 		perl -0pe 's/% (.*>>bindermode<<)$$/$$1/mg' | \
-		perl -0pe 's/^(.*>>nobindermode<<)$$/% $$1/mg' > main-binder.tex
+		perl -0pe 's/^(.*>>nobindermode<<)$$/% $$1/mg' > $@
+
+build-binder-pdf: main-binder.tex
+	platex    -kanji=utf8 $(<:.tex=)
+	pbibtex   -kanji=utf8 $(<:.tex=)
+	platex    -kanji=utf8 $(<:.tex=)
+	platex    -kanji=utf8 $(<:.tex=)
+	dvipdfmx  -p a4 $(<:.tex=)
+	rm $<
+
+test: main-binder.tex
+	echo 	$(<:.tex=)
 
 clean:
 	/bin/rm -f *~ *.log *.dvi *.blg *.aux *.out *.bbl *.lot *.toc *.lof *.pdf
