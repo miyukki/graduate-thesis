@@ -12,3 +12,5 @@
 *~
 .DS_Store
 Thumbs.db
+
+!img/*.pdf
