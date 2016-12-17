@@ -7,6 +7,24 @@
 
 \section{ソフトウェアによる実装}
 
+本実装では、Blackmagic DesignのIntensity Pro 4Kを用いた。
+
+\begin{figure}[htbp]
+    \begin{center}
+        \includegraphics[bb=0 0 841 121,width=15.5cm]{img/software-implement-flow.pdf}
+    \end{center}
+    \caption{Implement Flow}
+    \label{fig:software-implement-flow}
+\end{figure}
+
+\begin{figure}[htbp]
+    \begin{center}
+        \includegraphics[bb=0 0 644 410,width=5cm]{img/bmd-intensity-pro-4k.jpg}
+    \end{center}
+    \caption{Blackmagic Design Intensity Pro 4K}
+    \label{fig:ted-4k-fmc-card}
+\end{figure}
+
 \section{ハードウェアによる実装}
 
 \subsection{FPGAの回路設計}
@@ -15,10 +33,59 @@ Axi4-Stream、tuser
 図\ref{fig:fpga-video-ethernet-diagram}
 図\ref{fig:fpga-ethernet-video-diagram}
 
-本実装では、Xilinxの 10 Gigabit Ethernet Subsystem、及び、Video Processing Subsystemを用いる。
+本実装では、Xilinxの 10 Gigabit Ethernet Subsystem、及び、Video Processing Subsystemを用いた。
+
+\begin{figure}[htbp]
+    \begin{center}
+        \includegraphics[bb=0 0 841 299,width=15.5cm]{img/fpga-implement-flow.pdf}
+    \end{center}
+    \caption{Implement Flow}
+    \label{fig:fpga-implement-flow}
+\end{figure}
+
+本実装の概要を、図\ref{fig:fpga-implement-flow}に示す。
+
+\begin{figure}[htbp]
+    \begin{center}
+        \includegraphics[bb=0 0 137 161,width=4cm]{img/ted-4k-fmc-card.jpg}
+    \end{center}
+    \caption{TED HDMI 2.0 FMCカード (TB-FMCH-HDMI4K)}
+    \label{fig:ted-4k-fmc-card}
+\end{figure}
+
 10 Gigabit Ethernet Subsystemの挙動に空いては、Xilinx PG157\cite{xilinx-pg157}を参照されたし。
 \cite{xilinx-pg235}
 \cite{xilinx-pg236}
+
+\begin{table}[htbp]
+  \caption{HDMI RX SubsystemのAxi4-Streamインターフェース \cite{xilinx-pg236}より抜粋}
+  \label{tb:pg236-vout-axi4-stream}
+  \begin{center}
+  \begin{tabular}{l|c|c|l}
+    \hline
+    Name   & Direction & Width     & Description \\\hline\hline
+    tdata  & Output    & 3*BPC*PPC & Data \\\hline
+    tlast  & Output    & 1         & End of line \\\hline
+    tready & Input     & 1         & Ready \\\hline
+    tuser  & Output    & 1         & Start of frame \\\hline
+    tvalid & Output    & 1         & Valid \\\hline
+  \end{tabular}\end{center}
+\end{table}
+
+\begin{table}[htbp]
+  \caption{HDMI TX SubsystemのAxi4-Streamインターフェース \cite{xilinx-pg235}より抜粋}
+  \label{tb:pg236-vin-axi4-stream}
+  \begin{center}
+  \begin{tabular}{l|c|c|l}
+    \hline
+    Name   & Direction & Width     & Description \\\hline\hline
+    tdata  & Input     & 3*BPC*PPC & Data \\\hline
+    tlast  & Input     & 1         & End of line \\\hline
+    tready & Output    & 1         & Ready \\\hline
+    tuser  & Input     & 1         & Start of frame \\\hline
+    tvalid & Input     & 1         & Valid \\\hline
+  \end{tabular}\end{center}
+\end{table}
 
 \begin{figure}[htbp]
     \begin{center}
@@ -44,12 +111,4 @@ Axi4-Stream、tuser
     \end{center}
     \caption{Video Packet Structure}
     \label{fig:fpga-video-packet}
-\end{figure}
-
-\begin{figure}[htbp]
-    \begin{center}
-        \includegraphics[bb=0 0 841 299,width=15.5cm]{img/fpga-implement-flow.pdf}
-    \end{center}
-    \caption{Implement Flow}
-    \label{fig:fpga-implement-flow}
 \end{figure}
