@@ -90,6 +90,11 @@ VESA（Video Electronics Standards Association）によって標準化された 
 赤、緑、青、クロックの4つのツイストペアケーブルで構成される。
 
 \subsection{HDMI}
+HDMI（High-Definition Multimedia Interface）は、映像、音声をデジタル信号で伝送する通信インターフェースの規格である。
+DVIを基に、音声伝送機能や著作権保護機能を加えたものであり、物理層はDVIと同じTMDSを使用している。
+
+HDMI 2.0では、帯域を18Gbpsに拡大し、4K@60pに対応
+また、HDMI 2.0
 1.4 / 2.0
 
 HDMI 2.0からは、YCbCr 4:2:0方式によるピクセルエンコーディングの規格が追加され、1/2のデータレートで転送することが可能となった。
@@ -118,14 +123,12 @@ HDMI 1.4\cite{hdmi-spec-1-4}では、RGB、YCbCr 4:4:4、YCbCr 4:2:2の色空間
 
 また、YCbCr方式
 
-すなわち、HDMIでは色空間のYCbCr 4:4:4、YCbCr 4:2:2のどちらであっても帯域には影響しない。
-
 % すなわち、\ref{sec:colorspace}章では、色深度
 \begin{figure}[htbp]
     \begin{center}
         \includegraphics[bb=0 0 531 141,width=13.926cm]{img/hdmi-spec-yuv-444.pdf}
     \end{center}
-    \caption{Video Stream to Ethernet Packet Subsystem Diagram}
+    \caption{HDMI 1.4 で定義されている YCbCr 4:4:4 方式におけるTMDSマッピング}
     \label{fig:hdmi-spec-yuv-444}
 \end{figure}
 
@@ -133,17 +136,22 @@ HDMI 1.4\cite{hdmi-spec-1-4}では、RGB、YCbCr 4:4:4、YCbCr 4:2:2の色空間
     \begin{center}
         \includegraphics[bb=0 0 531 141,width=13.926cm]{img/hdmi-spec-yuv-422.pdf}
     \end{center}
-    \caption{Video Stream to Ethernet Packet Subsystem Diagram}
+    \caption{HDMI 1.4 で定義されている YCbCr 4:2:2 方式におけるTMDSマッピング}
     \label{fig:hdmi-spec-yuv-422}
 \end{figure}
+
+\ref{sec:colorspace}節では、同じ色震度の場合、YUV 4:2:2はYUV 4:4:4と比べ2/3となると述べたが、HDMI 1.4で定義されているYCbCr 4:2:2では、1ピクセルあたりの色震度は変わらず、12bit
+すなわち、HDMIでは色空間のYCbCr 4:4:4、YCbCr 4:2:2のどちらであっても帯域には影響しない。
 
 \begin{figure}[htbp]
     \begin{center}
         \includegraphics[bb=0 0 591 306,width=15.5cm]{img/hdmi-spec-yuv-420.pdf}
     \end{center}
-    \caption{Video Stream to Ethernet Packet Subsystem Diagram}
+    \caption{HDMI 2.0 で定義されている YCbCr 4:2:0 方式におけるTMDSマッピング}
     \label{fig:hdmi-spec-yuv-420}
 \end{figure}
+
+HDMIでは、24bitの他に、30bit、36bit、48bitの色深度に対応しているが、YCbCr 4:2:0では、24bitのみの対応である。
 
 \subsection{SDI}
 
