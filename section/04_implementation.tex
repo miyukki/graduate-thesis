@@ -11,8 +11,7 @@
 
 \section{ソフトウェアによる実装}
 
-
-本実装では、Blackmagic DesignのIntensity Pro 4Kを用いた。
+本実装では、汎用的なデスクトップコンピュター、Intel 10Gbps NIC、
 
 \begin{figure}[htbp]
     \begin{center}
@@ -48,7 +47,7 @@ Axi4-Stream、tuser
     \label{fig:fpga-implement-flow}
 \end{figure}
 
-本実装の概要を、図\ref{fig:fpga-implement-flow}に示す。
+% 本実装の概要を、図\ref{fig:fpga-implement-flow}に示す。
 
 \begin{figure}[htbp]
     \begin{center}
@@ -58,9 +57,9 @@ Axi4-Stream、tuser
     \label{fig:ted-4k-fmc-card}
 \end{figure}
 
-10 Gigabit Ethernet Subsystemの挙動に空いては、Xilinx PG157\cite{xilinx-pg157}を参照されたし。
-\cite{xilinx-pg235}
-\cite{xilinx-pg236}
+% 10 Gigabit Ethernet Subsystemの挙動に空いては、Xilinx PG157\cite{xilinx-pg157}を参照されたし。
+% \cite{xilinx-pg235}
+% \cite{xilinx-pg236}
 
 \begin{table}[htbp]
   \caption{HDMI RX SubsystemのAxi4-Streamインターフェース \cite{xilinx-pg236}より抜粋}
@@ -108,7 +107,9 @@ Axi4-Stream、tuser
     \label{fig:fpga-ethernet-video-diagram}
 \end{figure}
 
-図\ref{fig:fpga-video-packet}に、本実装で用いたパケット構造を示す。
+% 図\ref{fig:fpga-video-packet}に、本実装で用いたパケット構造を示す。
+
+
 
 \begin{figure}[htbp]
     \begin{center}
@@ -116,4 +117,31 @@ Axi4-Stream、tuser
     \end{center}
     \caption{Video Packet Structure}
     \label{fig:fpga-video-packet}
+\end{figure}
+
+ビデオデータより前の区間が6byte、Ethernetパケットを構築、64bitごとに生成するため、tcpのペイロード部分が区切りが
+
+
+\begin{figure}[htbp]
+    \begin{center}
+        \includegraphics[bb=0 0 1201 438,width=15.5cm]{img/fpga-ila-fifo-to-eth.png}
+    \end{center}
+    \caption{Video Packet Structure}
+    \label{fig:fpga-ila-fifo-to-eth}
+\end{figure}
+
+\begin{figure}[htbp]
+    \begin{center}
+        \includegraphics[bb=0 0 1199 246,width=15.5cm]{img/fpga-ila-hdmi.png}
+    \end{center}
+    \caption{Video Packet Structure}
+    \label{fig:fpga-ila-hdmi}
+\end{figure}
+
+\begin{figure}[htbp]
+    \begin{center}
+        \includegraphics[bb=0 0 1197 246,width=15.5cm]{img/fpga-ila-hdmi-x2.png}
+    \end{center}
+    \caption{Video Packet Structure}
+    \label{fig:fpga-ila-hdmi-x2}
 \end{figure}
