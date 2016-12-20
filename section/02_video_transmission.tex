@@ -41,7 +41,7 @@ YUV 4:4:4では、輝度信号、色差信号共に1ピクセル毎である。
 YUV 4:2:2では、輝度信号は1ピクセル毎、色差信号は2ピクセル毎であり、同じ色深度のYUV 4:4:4と比べ、帯域はおよそ2/3となる。
 YUV 4:2:0では、輝度信号は1ピクセル毎、色差信号は4ピクセル毎であり、同じ色深度のYUV 4:2:2と比べ、帯域はおよそ3/4となり、同じ色深度のYUV 4:4:4と比べ、帯域はおよそ1/2となる。
 
-% 図\ref{fig:yuv-pixel-structure}のCb、Crの、どこのピクセルの色情報を扱うかは、伝送方式の規格によって異なる。
+なお、図\ref{fig:yuv-pixel-structure}で示した、UV成分であるCb、Crの色のサンプリング方法は、伝送方式の規格によって定められている。
 
 \section{帯域}
 \label{sec:bandwidth}
@@ -80,12 +80,19 @@ YUV 4:2:0では、輝度信号は1ピクセル毎、色差信号は4ピクセル
 \label{sec:interface}
 
 \subsection{VGA}
+VGA（Video Graphics Array）は、IBMが発表したアナログ映像信号の伝送規格、または、同社が開発したVGA表示回路用のチップのことを指す。
+DE-15コネクタを使用し、赤、緑、青、垂直同期、水平同期の5つのアナログ信号で映像を伝送することができる。
+DDC（VESA Display Data Channel）信号を使用することで、接続機器の対応する解像度を送信することができ、最近では1080pの映像を伝送する機器も多い。
+PCでの映像出力方式として普及したが、アナログ信号であることや、音声伝送の手段が別途必要となるため、HDMIやDisplayPortなどのインターフェースに移行が進んでいる。
 
+\subsection{DisplayPort}
+DisplayPortは、VESA\footnote{ビデオ周辺機器に関する業界標準化団体}によって標準化された映像伝送規格であり、主に超解像度向けのインターフェースとして普及している。
+DisplayPort 1.3からは、32.4 Gbpsのデータレートに対応し、8K映像の伝送にも対応している。
 
 \subsection{DVI}
-Digital Visual Interface
+DVI（Digital Visual Interface）は、
 Transition Minimized Differential Signaling、TMDS
-VESA（Video Electronics Standards Association）によって標準化された デジタル映像信号の伝送方式。
+VESA（Video Electronics Standards Association）によって標準化された デジタル映像信号の伝送規格。
 であり、
 赤、緑、青、クロックの4つのツイストペアケーブルで構成される。
 
@@ -155,8 +162,13 @@ HDMIでは、24bitの他に、30bit、36bit、48bitの色深度に対応して�
 
 \subsection{SDI}
 
-同軸ケーブルを用いた映像伝送方式
-ロック
+SDI（Serial Digital Interface）は、SMPTE\footnote{米国映画テレビ技術者協会}によって標準化された映像伝送規格であり、主に業務機器向けの規格である。
+
+同軸ケーブルを使用しているため、HDMIと比べて距離に対する減衰が少なく、HD-SDIでは、およそ100m遠方に伝送することができる。
+BNC端子を使用することが一般的であり、抜け落ち防止のためのロック機能がるため、中継現場で活躍する。
+
+解像度や帯域に応じて、SD-SDI、HD-SDI、3G-SDI、6G-SDI、12G-SDIなど複数の規格が定められている。
+また、4K・8K映像を伝送するために、HD-SDIを4本1組で使用して伝送する事も可能である。
 
 \section{伝送手法}
 
