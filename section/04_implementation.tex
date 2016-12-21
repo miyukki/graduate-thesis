@@ -3,7 +3,7 @@
 
 % 本章では、\ref{chap:network_transmission}章で提示した、
 
-\section{UoIP} % UHD over IP
+% \section{UoIP} % UHD over IP
 
 \section{システム構成}
 
@@ -11,7 +11,7 @@
 
 \section{ソフトウェアによる実装}
 
-本実装では、汎用的なデスクトップコンピュター、Intel 10Gbps NIC、
+本実装では、汎用的なデスクトップコンピュターに10Gbpsに対応したNIC、4Kに対応したキャプチャボードを用いて、
 Blackmagic DeckLink SDK\cite{bmd-decklink-sdk}を用いた。
 
 \begin{figure}[htbp]
@@ -32,13 +32,7 @@ Blackmagic DeckLink SDK\cite{bmd-decklink-sdk}を用いた。
 
 \section{ハードウェアによる実装}
 
-\subsection{FPGAの回路設計}
-
-Axi4-Stream、tuser
-図\ref{fig:fpga-video-ethernet-diagram}
-図\ref{fig:fpga-ethernet-video-diagram}
-
-本実装では、Xilinxの 10 Gigabit Ethernet Subsystem、及び、Video Processing Subsystemを用いた。
+ハードウェアによる実装では、Xilinx KC705 評価ボード、TED HDMI 2.0 FMCカードを用いた。
 
 \begin{figure}[htbp]
     \begin{center}
@@ -57,6 +51,14 @@ Axi4-Stream、tuser
     \caption{TED HDMI 2.0 FMCカード (TB-FMCH-HDMI4K)}
     \label{fig:ted-4k-fmc-card}
 \end{figure}
+
+\subsection{FPGAの回路設計}
+
+Axi4-Stream、tuser
+図\ref{fig:fpga-video-ethernet-diagram}
+図\ref{fig:fpga-ethernet-video-diagram}
+
+本実装では、Xilinxの 10 Gigabit Ethernet Subsystem、及び、Video Processing Subsystemを用いた。
 
 % 10 Gigabit Ethernet Subsystemの挙動に空いては、Xilinx PG157\cite{xilinx-pg157}を参照されたし。
 % \cite{xilinx-pg235}
