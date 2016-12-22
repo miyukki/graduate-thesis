@@ -2,17 +2,34 @@
 \label{chap:video-transmission}
 
 本章では、映像伝送システムを構成する技術要素の仕組みについて解説する。
+% \ref{chap:network-transmission}章で必要な、
 % それぞれ、○○について述べる
 
 \section{ビデオカメラ}
 \label{sec:camera}
 
+% ここはaomさんの引用なので適切にする
+ビデオカメラは、映像の入力機構である。
+撮影素子であるイメージセンサは、多数の受光素子によって構成されており、それぞれの受光素子は、光エネルギーの明暗に従い電荷を発生する。
+撮影対象部から反射される光をカメラのレンズを通して、この撮影素子の受光部にあてることで、その明暗を電荷量を光電変換する。
+変換された電圧値を順次読み出し，電気信号に変換することでアナログ値である光情報をデジタル値に変換する。
+
+ビデオカメラによる出力インターフェースとしては、デジタル信号としてはSDIやHDMIのインターフェースを使用するのが一般的である。
 
 \section{ディスプレイ}
 \label{sec:display}
 
-\ref{sec:interface}
+% ここはaomさんの引用なので適切にする
+ディスプレイは、映像の表示機構である。
+ディスプレイには大まかに、アナログディスプレイとデジタルディスプレイに二分できる。
 
+アナログディスプレイでは、CRT、すなわちブラウン管を用いた描画方式である。
+管面全体を走査線とよぶ固定パターンでスキャンしつつ、映像信号の輝度成分に従って電子ビームの強さを変調して描画する。
+このように、画面上の任意の点の明るさを制御することにより画像を作り上げている。
+
+一方、デジタルディスプレイでは、薄い板状の液晶パネルを用いた描画方式である。
+偏光フィルタから入ってきた光を、電極によりピクセルのカラーごとに電荷をかけることにより、配向膜を光が通り抜け描画する。
+ブ゙ラウン管の走査方式を後継しており、映像の制御信号として、水平同期信号と垂直同期信号が使われている。
 
 \section{インターレース}
 \label{sec:interlace}
@@ -20,9 +37,12 @@
 画像伝送において、データレートを増やさずに描画回数を増やす技術である。
 この方式の特徴は、「人間の視野は動くものの細部を捉えられない」という性質に基づいている。
 飛び越し走査とも呼ばれ、奇数番目の走査線を先に送り、偶数番目の走査線をその後に送る。
-アナログテレビによく使われ
-また、現在でも走査線を1ラインに割り当てられたものとして、ハイビジョン放送でも利用されている。
 
+デジタル化が進んでいる現在でも、走査線を1ラインに割り当てられたものとして、データレートを減らす際の手段として利用されている。
+主な例として、日本のテレビジョン放送では、アナログテレビ放送、デジタルテレビ放送のどちらでも使われている。
+
+幸いなことに、4K・8K映像ではインターレース方式は使われることはない。[要出典]
+% 幸いな理由と出典先を明示する
 
 \section{色空間と色深度}
 \label{sec:colorspace}
@@ -56,14 +76,11 @@ YUV 4:2:0では、輝度信号は1ピクセル毎、色差信号は4ピクセル
 % この部分はあとで何処かに持っていく予定
 
 帯域は解像度の他にも、インターレース、色空間、色深度により変化する。
+また、伝送するインターフェースの規格によっても、若干の違いがあるため、ここではHDMIを基準とする。
+色深度を8bitとした場合の解像度、フレームレート、色空間別に見たピクセルクロック、帯域を、表\ref{tb:video-bandwidth}に示す。
 
-表は次のように出力される。（表\ref{tb:video-bandwidth}）
-色深度は8bitとする。
-
-また、1920x1080、
-1920x1080p/60 2200x1125 148.5 SMPTE 274M
-
-1Channel = 2200 * 1125 * 3 * 8 * 60 * 1.25/3
+% 1920x1080p/60 2200x1125 148.5 SMPTE 274M
+% 1Channel = 2200 * 1125 * 3 * 8 * 60 * 1.25/3
 
 \begin{table}[htbp]
   \caption{解像度、フレームレート、色空間による帯域の変化}
@@ -72,15 +89,15 @@ YUV 4:2:0では、輝度信号は1ピクセル毎、色差信号は4ピクセル
   \begin{tabular}{c|c|c|c|c|c}
     \hline
     解像度     & フレームレート & 色空間  & ピクセルクロック & 帯域     & 同期区間を含んだ帯域 \\\hline\hline
-    3840x2160 & 60p          & RGB    & 1.485MHz      & XX Gbps & YY Gbps           \\\hline
-    3840x2160 & 60p          & YUV422 & 1.485MHz      & XX Gbps & YY Gbps           \\\hline
-    3840x2160 & 60p          & YUV420 & 1.485MHz      & XX Gbps & YY Gbps           \\\hline
-    3840x2160 & 30p          & RGB    & 1.485MHz      & XX Gbps & YY Gbps           \\\hline
-    3840x2160 & 30p          & YUV422 & 1.485MHz      & XX Gbps & YY Gbps           \\\hline
-    1920x1080 & 60p          & RGB    & 1.485MHz      & XX Gbps & YY Gbps           \\\hline
-    1920x1080 & 60p          & YUV422 & 1.485MHz      & XX Gbps & YY Gbps           \\\hline
-    1920x1080 & 60i          & RGB    & 1.485MHz      & XX Gbps & YY Gbps           \\\hline
-    1920x1080 & 60i          & YUV422 & 1.485MHz      & XX Gbps & YY Gbps           \\\hline
+    3840x2160 & 60p          & RGB    & 148.5MHz      & XX Gbps & YY Gbps           \\\hline
+    3840x2160 & 60p          & YUV422 & 148.5MHz      & XX Gbps & YY Gbps           \\\hline
+    3840x2160 & 60p          & YUV420 & 148.5MHz      & XX Gbps & YY Gbps           \\\hline
+    3840x2160 & 30p          & RGB    & 148.5MHz      & XX Gbps & YY Gbps           \\\hline
+    3840x2160 & 30p          & YUV422 & 148.5MHz      & XX Gbps & YY Gbps           \\\hline
+    1920x1080 & 60p          & RGB    & 148.5MHz      & XX Gbps & YY Gbps           \\\hline
+    1920x1080 & 60p          & YUV422 & 148.5MHz      & XX Gbps & YY Gbps           \\\hline
+    1920x1080 & 60i          & RGB    & 148.5MHz      & XX Gbps & YY Gbps           \\\hline
+    1920x1080 & 60i          & YUV422 & 148.5MHz      & XX Gbps & YY Gbps           \\\hline
   \end{tabular}\end{center}
 \end{table}
 
@@ -94,23 +111,20 @@ DDC（VESA Display Data Channel）信号を使用することで、接続機器�
 PCでの映像出力方式として普及したが、アナログ信号であることや、音声伝送の手段が別途必要となるため、HDMIやDisplayPortなどのインターフェースに移行が進んでいる。
 
 \subsection{DisplayPort}
-DisplayPortは、VESA\footnote{ビデオ周辺機器に関する業界標準化団体}によって標準化された映像伝送規格であり、主に超解像度向けのインターフェースとして普及している。
+DisplayPortは、VESA\footnote{Video Electronics Standards Association ビデオ周辺機器に関する業界標準化団体}によって標準化された映像伝送規格であり、主に超解像度向けのインターフェースとして普及している。
 DisplayPort 1.3からは、32.4 Gbpsのデータレートに対応し、8K映像の伝送にも対応している。
 
 \subsection{DVI}
-DVI（Digital Visual Interface）は、
-Transition Minimized Differential Signaling、TMDS
-VESA（Video Electronics Standards Association）によって標準化された デジタル映像信号の伝送規格。
-であり、
-赤、緑、青、クロックの4つのツイストペアケーブルで構成される。
+DVI（Digital Visual Interface）は、\footnote{Video Electronics Standards Association ビデオ周辺機器に関する業界標準化団体}によって標準化された デジタル映像信号の伝送規格。
+物理層としてTMDS（Transition Minimized Differential Signaling）を使用しており、赤、緑、青、クロックの4つのツイストペアケーブルで構成される。
+% TMDSの解説画像
 
 \subsection{HDMI}
 HDMI（High-Definition Multimedia Interface）は、映像、音声をデジタル信号で伝送する通信インターフェースの規格である。
 DVIを基に、音声伝送機能や著作権保護機能を加えたものであり、物理層はDVIと同じTMDSを使用している。
-
-HDMI 2.0では、帯域を18Gbpsに拡大し、4K@60pに対応
-また、HDMI 2.0
-1.4 / 2.0
+HDMI 2.0では、帯域を18Gbpsに拡大し、4K@60pに対応している。
+% また、HDMI 2.0
+% 1.4 / 2.0
 
 HDMI 2.0からは、YCbCr 4:2:0方式によるピクセルエンコーディングの規格が追加され、1/2のデータレートで転送することが可能となった。
 
@@ -136,7 +150,7 @@ HDMI 2.0からは、YCbCr 4:2:0方式によるピクセルエンコーディン�
 
 HDMI 1.4\cite{hdmi-spec-1-4}では、RGB、YCbCr 4:4:4、YCbCr 4:2:2の色空間がサポートされており、HDMI 2.0\cite{hdmi-spec-2-0}では、新たに4K解像度向けのYCbCr 4:2:0がサポートされた。
 
-また、YCbCr方式
+% また、YCbCr方式
 
 % すなわち、\ref{sec:colorspace}章では、色深度
 \begin{figure}[htbp]
@@ -155,8 +169,8 @@ HDMI 1.4\cite{hdmi-spec-1-4}では、RGB、YCbCr 4:4:4、YCbCr 4:2:2の色空間
     \label{fig:hdmi-spec-yuv-422}
 \end{figure}
 
-\ref{sec:colorspace}節では、同じ色震度の場合、YUV 4:2:2はYUV 4:4:4と比べ2/3となると述べたが、HDMI 1.4で定義されているYCbCr 4:2:2では、1ピクセルあたりの色震度は変わらず、12bit
-すなわち、HDMIでは色空間のYCbCr 4:4:4、YCbCr 4:2:2のどちらであっても帯域には影響しない。
+\ref{sec:colorspace}節では、同じ色深度の場合YUV 4:2:2はYUV 4:4:4と比べ2/3となると述べたが、HDMI 1.4で定義されているYCbCr 4:2:2では、1ピクセルあたりの色深度は変わらず、YおよびCbCrのサンプリング解像度が8bitから12bitになる。
+そのため、HDMIでは色空間のYCbCr 4:4:4、YCbCr 4:2:2のどちらであっても帯域には影響しない。
 
 \begin{figure}[htbp]
     \begin{center}
@@ -181,4 +195,5 @@ BNC端子を使用することが一般的であり、抜け落ち防止のた�
 % \section{伝送手法}
 
 \section{まとめ}
+
 あ

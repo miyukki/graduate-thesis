@@ -1,18 +1,16 @@
 \chapter{システムの設計・実装}
 \label{chap:implementation}
 
-% 本章では、\ref{chap:network_transmission}章で提示した、
+本章では、\ref{chap:network_transmission}章で述べた、XXについて評価するため、4K映像を非圧縮でIPで伝送するシステムを、ソフトウェアとハードウェアで実装する。
 
 % \section{UoIP} % UHD over IP
 
-\section{システム構成}
-
-
+% \section{システム構成}
 
 \section{ソフトウェアによる実装}
 
-本実装では、汎用的なデスクトップコンピュターに10Gbpsに対応したNIC、4Kに対応したキャプチャボードを用いて、
-Blackmagic DeckLink SDK\cite{bmd-decklink-sdk}を用いた。
+ソフトウェアによる実装では、汎用的なPCに10Gbpsに対応したNIC、4K対応キャプチャボード Blackmagic Design Intensity Pro 4Kを用いて行った。
+本実装の概要を、図\ref{fig:software-implement-flow}に示す。
 
 \begin{figure}[htbp]
     \begin{center}
@@ -30,9 +28,16 @@ Blackmagic DeckLink SDK\cite{bmd-decklink-sdk}を用いた。
     \label{fig:ted-4k-fmc-card}
 \end{figure}
 
+送信プログラムでは、キャプチャボードでキャプチャしたデータをBlackmagic DeckLink SDK\cite{bmd-decklink-sdk}を用いて取得し、IP経由で伝送するプログラムを作成した。
+受信プログラムでは、IP経由で受信したデータをLinux汎用的なメディアプレーヤーであるmplayerで再生するプログラムを作成した。
+% ここは後ほど詳細を記述する。
+
+今回の評価ではダークファイバー環境での想定のため、順序制御、再送制御の実装を省くため、TCPで実装を行った。
+
 \section{ハードウェアによる実装}
 
-ハードウェアによる実装では、Xilinx KC705 評価ボード、TED HDMI 2.0 FMCカードを用いた。
+ハードウェアによる実装では、Xilinx KC705 評価ボード、HDMIインターフェースカード TED HDMI 2.0 FMCカードを用いて行った。
+本実装の概要を、図\ref{fig:fpga-implement-flow}に示す。
 
 \begin{figure}[htbp]
     \begin{center}
@@ -41,8 +46,6 @@ Blackmagic DeckLink SDK\cite{bmd-decklink-sdk}を用いた。
     \caption{ハードウェアによる実装の構成}
     \label{fig:fpga-implement-flow}
 \end{figure}
-
-% 本実装の概要を、図\ref{fig:fpga-implement-flow}に示す。
 
 \begin{figure}[htbp]
     \begin{center}
@@ -54,11 +57,21 @@ Blackmagic DeckLink SDK\cite{bmd-decklink-sdk}を用いた。
 
 \subsection{FPGAの回路設計}
 
+本実装では、Xilinxの 10 Gigabit Ethernet Subsystem、及び、Video Processing Subsystemを用いた。
+
+表\ref{tb:pg236-vout-axi4-stream}
+表\ref{tb:pg235-vin-axi4-stream}
+
 Axi4-Stream、tuser
 図\ref{fig:fpga-video-ethernet-diagram}
 図\ref{fig:fpga-ethernet-video-diagram}
 
-本実装では、Xilinxの 10 Gigabit Ethernet Subsystem、及び、Video Processing Subsystemを用いた。
+% これを解決するために、v_axis
+
+しかし、10 Gigabit Ethernet Subsystemは156.25MHzとなり、Video Processing Subsystemでは300MHzとなる。
+そのため、読み書きで独立したクロックに対応したFIFOを使用する。
+
+また、
 
 % 10 Gigabit Ethernet Subsystemの挙動に空いては、Xilinx PG157\cite{xilinx-pg157}を参照されたし。
 % \cite{xilinx-pg235}
@@ -81,7 +94,7 @@ Axi4-Stream、tuser
 
 \begin{table}[htbp]
   \caption{HDMI TX SubsystemのAxi4-Streamインターフェース \cite{xilinx-pg235}より抜粋}
-  \label{tb:pg236-vin-axi4-stream}
+  \label{tb:pg235-vin-axi4-stream}
   \begin{center}
   \begin{tabular}{l|c|c|l}
     \hline
@@ -110,26 +123,24 @@ Axi4-Stream、tuser
     \label{fig:fpga-ethernet-video-diagram}
 \end{figure}
 
-% 図\ref{fig:fpga-video-packet}に、本実装で用いたパケット構造を示す。
-
-
+図\ref{fig:fpga-video-packet}に、本実装で用いたパケット構造を示す。
+UDPのペイロードのビデオデータより前の区間が6byteなのは、Ethernetパケットを構築していく際に、ペイロードの先頭6byte目が丁度64bitの区切り目となるため、FPGAで処理する祭に効率が良いためである。
 
 \begin{figure}[htbp]
     \begin{center}
         \includegraphics[bb=0 0 643 122,width=15.5cm]{img/fpga-video-packet.pdf}
     \end{center}
-    \caption{Video Packet Structure}
+    \caption{UDPペイロードのパケット構造}
     \label{fig:fpga-video-packet}
 \end{figure}
 
-ビデオデータより前の区間が6byte、Ethernetパケットを構築、64bitごとに生成するため、tcpのペイロード部分が区切りが
-
+また、図\ref{fig:fpga-ila-fifo-to-eth}、図\ref{fig:fpga-ila-hdmi}では、本実装を稼働させたときのILA（Integrated Logic Analyzer）とよばれる、FPGAの内部信号をモニターするためのツールを使った際の様子である。
 
 \begin{figure}[htbp]
     \begin{center}
         \includegraphics[bb=0 0 1201 438,width=15.5cm]{img/fpga-ila-fifo-to-eth.png}
     \end{center}
-    \caption{Video Packet Structure}
+    \caption{ILAによるIP伝送時のFIFOとEthernet Subsystemのデータのダンプ}
     \label{fig:fpga-ila-fifo-to-eth}
 \end{figure}
 
@@ -137,14 +148,17 @@ Axi4-Stream、tuser
     \begin{center}
         \includegraphics[bb=0 0 1199 246,width=15.5cm]{img/fpga-ila-hdmi.png}
     \end{center}
-    \caption{Video Packet Structure}
+    \caption{ILAによるIP伝送時のHDMI入出力のデータのダンプ}
     \label{fig:fpga-ila-hdmi}
 \end{figure}
 
-\begin{figure}[htbp]
-    \begin{center}
-        \includegraphics[bb=0 0 1197 246,width=15.5cm]{img/fpga-ila-hdmi-x2.png}
-    \end{center}
-    \caption{Video Packet Structure}
-    \label{fig:fpga-ila-hdmi-x2}
-\end{figure}
+% \begin{figure}[htbp]
+%     \begin{center}
+%         \includegraphics[bb=0 0 1197 246,width=15.5cm]{img/fpga-ila-hdmi-x2.png}
+%     \end{center}
+%     \caption{図\ref{fig:fpga-ila-hdmi}を拡大した}
+%     \label{fig:fpga-ila-hdmi-x2}
+% \end{figure}
+
+特殊なバッファリング機構は用意していないが、FIFOにデータが入っているかを示す信号（almost\_emptyの立ち下がり）を合図に、パケットを生成する祭に一定のクロックが経過するため、その分のFIFOへの書き込みのバッファリングが行われる。
+そのため、図\ref{fig:fpga-ila-hdmi}では、hdmi\_rx\_tvalidが頻繁に立ち上がりと立ち下がりを繰り返しているのに対し、hdmi\_tx\_tvalidはある程度まとまった周期で立ち上がりをしているのが確認できる。
