@@ -59,19 +59,20 @@
 
 本実装では、Xilinxの 10 Gigabit Ethernet Subsystem、及び、Video Processing Subsystemを用いた。
 
-表\ref{tb:pg236-vout-axi4-stream}
-表\ref{tb:pg235-vin-axi4-stream}
+% 表\ref{tb:pg236-vout-axi4-stream}
+% 表\ref{tb:pg235-vin-axi4-stream}
 
-Axi4-Stream、tuser
-図\ref{fig:fpga-video-ethernet-diagram}
-図\ref{fig:fpga-ethernet-video-diagram}
+% Axi4-Stream、tuser
+% 図\ref{fig:fpga-video-ethernet-diagram}
+% 図\ref{fig:fpga-ethernet-video-diagram}
 
-% これを解決するために、v_axis
+% Xilinxの 10 Gigabit Ethernet Subsystem、及び、Video Processing Subsystem
+% これを解決するため、Xilinxの 10 Gigabit Ethernet Subsystem、及び、Video Processing Subsystem
 
 しかし、10 Gigabit Ethernet Subsystemは156.25MHzとなり、Video Processing Subsystemでは300MHzとなる。
 そのため、読み書きで独立したクロックに対応したFIFOを使用する。
 
-また、
+% また、
 
 % 10 Gigabit Ethernet Subsystemの挙動に空いては、Xilinx PG157\cite{xilinx-pg157}を参照されたし。
 % \cite{xilinx-pg235}
