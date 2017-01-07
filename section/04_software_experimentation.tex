@@ -1,4 +1,5 @@
-\section{ソフトウェアによる実装}
+\chapter{ソフトウェアによる実験}
+\label{chap:software-experimentation}
 
 ソフトウェアによる実装では、汎用的なPCに10Gbpsに対応したNIC、4K対応キャプチャボード Blackmagic Design Intensity Pro 4Kを用いて行った。
 本実装の概要を、図\ref{fig:software-implement-flow}に示す。
@@ -32,7 +33,7 @@
 \end{figure}
 
 送信プログラムでは、キャプチャボードでキャプチャしたデータをBlackmagic DeckLink SDK\cite{bmd-decklink-sdk}を用いて取得し、IP経由で伝送するプログラムを作成した。
-受信プログラムでは、IP経由で受信したデータをLinux汎用的なメディアプレーヤーであるmplayerで再生するプログラムを作成した。
+受信プログラムでは、IP経由で受信したデータをLinux汎用的なメディアプレーヤーであるmplayerで再生するプログラムを作成した\cite{bmd-4k-streaming}。
 % ここは後ほど詳細を記述する。
 
 今回の評価ではダークファイバー環境での想定のため、順序制御、再送制御の実装を省くため、TCPで実装を行った。
