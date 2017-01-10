@@ -214,17 +214,52 @@ HDMIの物理層であるTMDSでは、8b/10b変換が行われるため、デー
 \end{table}
 
 \section{IP伝送規格}
-また、映像業界を代表する会社が主導となって開発をしていることが多い。
+Video over IPにおける映像のIP伝送規格は、SMPTE 2022とNMIが主流となっている\cite{kodera-interbee2016}。
+しかし、その他にも多くの規格が提唱され、市場ではどの規格で統一されるかが静観されている。
+
+IP伝送規格は、SDIなどの標準化を行っているSMPTEや、映像制作現場などの機器を制作している会社が製品とともに規格化を行う事が多い。
+この節では、抜粋して幾つかのIP伝送規格について解説する。
 
 \subsection{SMPTE 2022}
+SMPTE 2022は、SMPTEが提唱、標準化したIP伝送規格であり、表\ref{tb:smpte2022-abstract}に示す7つの規格に分かれている。
 
-\subsection{NDI ネットワーク・デジタル・インターフェース}
+\begin{table}[htbp]
+  \caption{SMPTE 2022の7つの規格の概要}
+  \label{tb:smpte2022-abstract}
+  \begin{center}
+  \begin{tabular}{c|l}
+    \hline
+    規格          & 概要 \\\hline\hline
+    SMPTE 2022-1 & IP伝送でのリアルタイムビデオ/オーディオ転送のFEC訂正 \\\hline
+    SMPTE 2022-2 & IP伝送での固定ビットレートMPEG-2 TSの単方向転送 \\\hline
+    SMPTE 2022-3 & IP伝送での可変ビットレートMPEG-2 TSの単方向転送 \\\hline
+    SMPTE 2022-4 & IP伝送での非ピース単位の可変ビットレートMPEG-2ストリームの単方向転送 \\\hline
+    SMPTE 2022-5 & IP伝送での高ビットレートメディア信号の伝送のための前方誤り訂正 \\\hline
+    SMPTE 2022-6 & IP伝送でのネットワークを介した高ビットレートメディア信号の伝送 \\\hline
+    SMPTE 2022-7 & IPデータグラムのシームレスな保護スイッチング \\\hline
+  \end{tabular}\end{center}
+\end{table}
+
+SMPTE 2022-1/2/3/4では、MPEG-2圧縮をベースとしたIP伝送について規格化され、SMPTE 2022-5/6では、非圧縮でありSDIのペイロードを基としたIP伝送について規格化されている。
+
+\subsection{SMPTE 2110}
+SMPTE 2110は、SMPTEが制定中の規格であり、VSF（Video Services Forum）に提出されたTR03、TR04の内容を取り込んでいる。
+
+SMPTE 2022-5/6ではSDIのペイロードを基としているため、IPパケットにする際にはSDIをカプセル化している。
+そのため、映像と音声データをIPレイヤーから識別することができず、制御に利用しにくいなどの問題がある。
+この問題を回避するため、SMPTE 2110では、ビデオデータの伝送にはRFC 4175\cite{rfc4175}のRTP、音声データの伝送にはAES 67を使用するなど、より効果的なIP伝送規格になるよう設計されている。
 
 \subsection{NMI ネットワーク・メディア・インターフェース}
-\cite{sony-nmi}
+NMI\cite{sony-nmi}は、ソニービジネスソリューションが提唱、規格化したIP伝送規格である。
 
-Video over IPにおける伝送規格は、SMPTE 2022とソニーのNMIが主流となっている\cite{kodera-interbee2016}が、その他にも多くの規格が提唱され、市場では
+非圧縮ではなく、低遅延高画質のコーデックであり、Visually LosslessなLLVC\cite{smpte-rdd-34}によって圧縮されている。
+また、機器間の同期にはナノ秒レベルの高精度同期が行える、SMPTE ST2059を使用している。
+
+\subsection{NDI ネットワーク・デジタル・インターフェース}
+NDI\cite{newtek-ndi}は、NewTekが提唱、開発したオープンなIP伝送規格である。
+
+多くのIP伝送規格は商用向けであり、詳細な仕様はオープンになっていないが、NDIではSDKやプラグインなどを公開し、ユーザーを集めている。
 
 \section{まとめ}
-
-あ
+TBD
+% また、各インターフェースでは、実際の映像のデータだけではなく、同期区間や物理層による8b/10b変換などによりデータ量が増加することも明らか
