@@ -1,4 +1,4 @@
-\chapter{映像伝送システム}
+\chapter{映像機器における要素技術}
 \label{chap:video-transmission}
 
 本章では、映像伝送システムを構成する技術要素の仕組みについて解説する。
@@ -39,11 +39,10 @@
 飛び越し走査とも呼ばれ、奇数番目の走査線を先に送り、偶数番目の走査線をその後に送る。
 
 デジタル化が進んでいる現在でも、走査線を1ラインに割り当て、データレートを減らす際の手段として利用されている。
-
-インターレースではない、画像をプログレッシブと呼び、インターレースからプログレッシブに変換する処理を、デインターレースと呼ぶ。
+また、インターレースではない、画像をプログレッシブと呼び、インターレースからプログレッシブに変換する処理を、デインターレースと呼ぶ。
 % 一時停止をした際に、動きの激しい箇所が
-デインターレースにはいくつかの方式があり、
-縞模様
+% デインターレースにはいくつかの方式があり、
+% 縞模様
 
 主な例として、日本のテレビジョン放送では、アナログテレビ放送、デジタルテレビ放送のどちらでも使われている。
 幸いなことに、4K・8K映像ではインターレース方式は使われることはない。[要出典]
@@ -76,36 +75,6 @@ YUV 4:2:0では、輝度信号は1ピクセル毎、色差信号は4ピクセル
 
 なお、図\ref{fig:yuv-pixel-structure}で示した、UV成分であるCb、Crの色のサンプリング方法は、伝送方式の規格によって定められている。
 
-\section{帯域}
-\label{sec:bandwidth}
-% この部分はあとで何処かに持っていく予定
-
-帯域は解像度の他にも、インターレース、色空間、色深度により変化する。
-また、伝送するインターフェースの規格によっても、若干の違いがあるため、ここではHDMIを基準とする。
-色深度を8bitとした場合の解像度、フレームレート、色空間別に見たピクセルクロック、帯域を、表\ref{tb:video-bandwidth}に示す。
-
-% 1920x1080p/60 2200x1125 148.5 SMPTE 274M
-% 1Channel = 2200 * 1125 * 3 * 8 * 60 * 1.25/3
-
-\begin{table}[htbp]
-  \caption{解像度、フレームレート、色空間による帯域の変化}
-  \label{tb:video-bandwidth}
-  \begin{center}
-  \begin{tabular}{c|c|c|c|c|c}
-    \hline
-    解像度     & フレームレート & 色空間  & ピクセルクロック & 帯域     & 同期区間を含んだ帯域 \\\hline\hline
-    3840x2160 & 60p          & RGB    & 148.5MHz      & XX Gbps & YY Gbps           \\\hline
-    3840x2160 & 60p          & YUV422 & 148.5MHz      & XX Gbps & YY Gbps           \\\hline
-    3840x2160 & 60p          & YUV420 & 148.5MHz      & XX Gbps & YY Gbps           \\\hline
-    3840x2160 & 30p          & RGB    & 148.5MHz      & XX Gbps & YY Gbps           \\\hline
-    3840x2160 & 30p          & YUV422 & 148.5MHz      & XX Gbps & YY Gbps           \\\hline
-    1920x1080 & 60p          & RGB    & 148.5MHz      & XX Gbps & YY Gbps           \\\hline
-    1920x1080 & 60p          & YUV422 & 148.5MHz      & XX Gbps & YY Gbps           \\\hline
-    1920x1080 & 60i          & RGB    & 148.5MHz      & XX Gbps & YY Gbps           \\\hline
-    1920x1080 & 60i          & YUV422 & 148.5MHz      & XX Gbps & YY Gbps           \\\hline
-  \end{tabular}\end{center}
-\end{table}
-
 \section{インターフェース}
 \label{sec:interface}
 
@@ -120,19 +89,27 @@ DisplayPortは、VESA\footnote{Video Electronics Standards Association ビデオ
 DisplayPort 1.3からは、32.4 Gbpsのデータレートに対応し、8K映像の伝送にも対応している。
 
 \subsection{DVI}
-DVI（Digital Visual Interface）は、VESA\footnote{Video Electronics Standards Association ビデオ周辺機器に関する業界標準化団体}によって標準化された デジタル映像信号の伝送規格。
-物理層としてTMDS（Transition Minimized Differential Signaling）を使用しており、赤、緑、青、クロックの4つのツイストペアケーブルで構成される。
-% TMDSの解説画像
+DVI（Digital Visual Interface）は、VESA\footnote{Video Electronics Standards Association ビデオ周辺機器に関する業界標準化団体}によって標準化された デジタル映像信号の伝送規格である。
+物理層として、Silicon Imageが開発したTMDS（Transition Minimized Differential Signaling）を使用している。
+TMDSは、データの3チャネルとクロックの1チャネルを備えた4つのツイストペアケーブルで構成され、主に高速シリアル通信で使用されている。
+TMDSでは、データの8b/10b符号化が行われ、データレートは20\%のロスとなるが、DC成分の偏りを押さえ、ブランキング区間などでもI/Oの遷移を増やしてデータの境界検出を用意にしている。
 
 \subsection{HDMI}
 HDMI（High-Definition Multimedia Interface）は、映像、音声をデジタル信号で伝送する通信インターフェースの規格である。
 DVIを基に、音声伝送機能や著作権保護機能を加えたものであり、物理層はDVIと同じTMDSを使用している。
-HDMI 2.0では、帯域を18Gbpsに拡大し、4K@60pに対応している。
-また、CES 2017に合わせ、HDMI 2.1が発表され、帯域を48Gbpsまでサポートし、8K@60pに対応した。
-% また、HDMI 2.0
-% 1.4 / 2.0
 
-HDMI 2.0からは、YCbCr 4:2:0方式によるピクセルエンコーディングの規格が追加され、1/2のデータレートで転送することが可能となった。
+HDMIのシステム構成は大きく分けて、映像を送る機器（Source）、映像を受け取る機器（Sink）、ケーブルの3つに分類することができる。
+
+\begin{figure}[htbp]
+    \begin{center}
+        \includegraphics[bb=0 0 721 283,width=15cm]{img/hdmi-spec-structure.pdf}
+    \end{center}
+    \caption{HDMIブロックダイアグラム}
+    \label{fig:hdmi-spec-structure}
+\end{figure}
+
+HDMI 2.0では、帯域を18Gbpsに拡大し、4K@60pに対応している。
+また、CES 2017に合わせ、HDMI 2.1が発表され、帯域を48Gbpsに拡大し、8K@60pに対応した。
 
 \begin{table}[htbp]
   \caption{HDMI 1.4と2.0での4K(3840x2160)映像の対応状況}
@@ -154,16 +131,18 @@ HDMI 2.0からは、YCbCr 4:2:0方式によるピクセルエンコーディン�
   \end{tabular}\end{center}
 \end{table}
 
-HDMI 1.4\cite{hdmi-spec-1-4}では、RGB、YCbCr 4:4:4、YCbCr 4:2:2の色空間がサポートされており、HDMI 2.0\cite{hdmi-spec-2-0}では、新たに4K解像度向けのYCbCr 4:2:0がサポートされた。
+HDMI 1.4\cite{hdmi-spec-1-4}では、RGB、YCbCr 4:4:4、YCbCr 4:2:2の色空間がサポートされている。
+HDMI 2.0\cite{hdmi-spec-2-0}では、4K解像度向けにYCbCr 4:2:0の色空間がサポートされた。
+YCbCr 4:2:0によるピクセルエンコーディングの規格では、YCbCr 4:2:2と比べ、1/2のデータレートで転送することが可能となった。
+これにより、一部の機器では4K解像度への対応をソフトウェアだけで行なうことが可能である。
 
-% また、YCbCr方式
+YCbCr 4:4:4、YCbCr 4:2:2のTMDSデータのマッピングを、図\ref{fig:hdmi-spec-yuv-444}と図\ref{fig:hdmi-spec-yuv-422}に示す。
 
-% すなわち、\ref{sec:colorspace}章では、色深度
 \begin{figure}[htbp]
     \begin{center}
         \includegraphics[bb=0 0 531 141,width=13.926cm]{img/hdmi-spec-yuv-444.pdf}
     \end{center}
-    \caption{HDMI 1.4 で定義されている YCbCr 4:4:4 方式におけるTMDSマッピング}
+    \caption{HDMI 1.4 で定義されている YCbCr 4:4:4 におけるTMDSマッピング}
     \label{fig:hdmi-spec-yuv-444}
 \end{figure}
 
@@ -171,18 +150,21 @@ HDMI 1.4\cite{hdmi-spec-1-4}では、RGB、YCbCr 4:4:4、YCbCr 4:2:2の色空間
     \begin{center}
         \includegraphics[bb=0 0 531 141,width=13.926cm]{img/hdmi-spec-yuv-422.pdf}
     \end{center}
-    \caption{HDMI 1.4 で定義されている YCbCr 4:2:2 方式におけるTMDSマッピング}
+    \caption{HDMI 1.4 で定義されている YCbCr 4:2:2 におけるTMDSマッピング}
     \label{fig:hdmi-spec-yuv-422}
 \end{figure}
 
 \ref{sec:colorspace}節では、同じ色深度の場合YUV 4:2:2はYUV 4:4:4と比べ2/3となると述べたが、HDMI 1.4で定義されているYCbCr 4:2:2では、1ピクセルあたりの色深度は変わらず、YおよびCbCrのサンプリング解像度が8bitから12bitになる。
 そのため、HDMIでは色空間のYCbCr 4:4:4、YCbCr 4:2:2のどちらであっても帯域には影響しない。
 
+\newpage
+YCbCr 4:2:0のTMDSデータのマッピングを、図\ref{fig:hdmi-spec-yuv-420}に示す。
+
 \begin{figure}[htbp]
     \begin{center}
         \includegraphics[bb=0 0 591 306,width=15.5cm]{img/hdmi-spec-yuv-420.pdf}
     \end{center}
-    \caption{HDMI 2.0 で定義されている YCbCr 4:2:0 方式におけるTMDSマッピング}
+    \caption{HDMI 2.0 で定義されている YCbCr 4:2:0 におけるTMDSマッピング}
     \label{fig:hdmi-spec-yuv-420}
 \end{figure}
 
@@ -193,10 +175,43 @@ HDMIでは、24bitの他に、30bit、36bit、48bitの色深度に対応して�
 SDI（Serial Digital Interface）は、SMPTE\footnote{米国映画テレビ技術者協会}によって標準化された映像伝送規格であり、主に業務機器向けの規格である。
 
 同軸ケーブルを使用しているため、HDMIと比べて距離に対する減衰が少なく、HD-SDIでは、およそ100m遠方に伝送することができる。
-BNC端子を使用することが一般的であり、抜け落ち防止のためのロック機能がるため、中継現場で活躍する。
+BNC端子を使用することが一般的であり、抜け落ち防止のためのロック機能がるため、放送局や中継現場で使われる。
 
 解像度や帯域に応じて、SD-SDI、HD-SDI、3G-SDI、6G-SDI、12G-SDIなど複数の規格が定められている。
-また、4K・8K映像を伝送するために、HD-SDIを4本1組で使用して伝送する事も可能である。
+また、4K・8K映像を伝送するために、HD-SDIや3G-SDIを2本1組や4本1組で使用して伝送する規格も定められている。
+
+\section{帯域}
+\label{sec:bandwidth}
+帯域は解像度の他にも、インターレース、色空間、色深度により変化する。
+また、伝送するインターフェースの規格によっても、物理層での扱いにより若干の違いがある。
+ここでは、HDMIで色深度を8bitとした場合の解像度、フレームレート、色空間別に見たピクセルクロック、データレートを表\ref{tb:video-bandwidth}に示す。
+
+% 1920x1080p/60 2200x1125 148.5 SMPTE 274M
+% 1Channel = 2200 * 1125 * 3 * 8 * 60 * 1.25/3
+
+同期区間を含めた垂直ピクセルを$p_w$、水平ピクセルを$p_h$、ピクセルあたりのビット数を$b$、フレームレートを$f$としたとき、HDMIのデータレート$r$は次のようにして求めることができる。
+HDMIの物理層であるTMDSでは、8b/10b変換が行われるため、データレートとしては1.25倍となることに注意していただきたい。
+
+\[ r=1.25bfp_wp_h \]
+
+\begin{table}[htbp]
+  \caption{解像度、フレームレート、色空間によるHDMIのデータレートの変化}
+  \label{tb:video-bandwidth}
+  \begin{center}
+  \begin{tabular}{c|c|c|c|c}
+    \hline
+    解像度     & フレームレート & 色空間  & ピクセルクロック & データレート  \\\hline\hline
+    3840x2160 & 60p          & RGB    & 594MHz        & 17.82 Gbps  \\\hline
+    3840x2160 & 60p          & YUV422 & 594MHz        & 17.82 Gbps  \\\hline
+    3840x2160 & 60p          & YUV420 & 297MHz        & 8.91 Gbps   \\\hline
+    3840x2160 & 30p          & RGB    & 297MHz        & 8.91 Gbps   \\\hline
+    3840x2160 & 30p          & YUV422 & 297MHz        & 8.91 Gbps   \\\hline
+    1920x1080 & 60p          & RGB    & 148.5MHz      & 4.455 Gbps  \\\hline
+    1920x1080 & 60p          & YUV422 & 148.5MHz      & 4.455 Gbps  \\\hline
+    1920x1080 & 60i          & RGB    & 74.25MHz      & 2.2275 Gbps \\\hline
+    1920x1080 & 60i          & YUV422 & 74.25MHz      & 2.2275 Gbps \\\hline
+  \end{tabular}\end{center}
+\end{table}
 
 \section{IP伝送規格}
 また、映像業界を代表する会社が主導となって開発をしていることが多い。
@@ -205,9 +220,10 @@ BNC端子を使用することが一般的であり、抜け落ち防止のた�
 
 \subsection{NDI ネットワーク・デジタル・インターフェース}
 
-\subsection{NMI ネットワーク・メディア・インターフェース\cite{sony-nmi}}
+\subsection{NMI ネットワーク・メディア・インターフェース}
+\cite{sony-nmi}
 
-% \section{伝送手法}
+Video over IPにおける伝送規格は、SMPTE 2022とソニーのNMIが主流となっている\cite{kodera-interbee2016}が、その他にも多くの規格が提唱され、市場では
 
 \section{まとめ}
 
