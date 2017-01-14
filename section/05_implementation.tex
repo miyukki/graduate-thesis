@@ -1,19 +1,11 @@
 \chapter{システムの設計・実装}
 \label{chap:implementation}
 
-本章では、\ref{chap:network_transmission}章で述べた、XXについて評価するため、4K映像を非圧縮でIPで伝送するシステムを、ソフトウェアとハードウェアで実装する。
-
-% \section{UoIP} % UHD over IP
-
-% \section{システム構成}
+本章では、\ref{chap:network-transmission}章で述べた、映像制作現場におけるIP伝送装置について評価するため、4K映像を非圧縮でIPで伝送するシステムであるNG-HDMI-TSをハードウェアで実装したことについて実装の解説をする。
 
 \section{実装の概要}
 
-ああ
-
-\section{ハードウェアによる実装}
-
-ハードウェアによる実装では、Xilinx KC705 評価ボード、HDMIインターフェースカード TED HDMI 2.0 FMCカードを用いて行った。
+IP伝送装置は、Xilinx KC705 評価ボード、HDMIインターフェースカードであるTED HDMI 2.0 FMCカードを使用した。
 本実装の概要を、図\ref{fig:fpga-implement-flow}に示す。
 
 \begin{figure}[htbp]
@@ -32,9 +24,49 @@
     \label{fig:ted-4k-fmc-card}
 \end{figure}
 
-\subsection{FPGAの回路設計}
+今回の実装では評価を行うために、もう1台のXilinx KC705 評価ボード、Quad SFP/SFP+カードを用いて、送信したIPパケットを折り返しする装置を使用した。
+IPパケットを折り返しする装置について、IP伝送装置と直接の関係はない。
 
-本実装では、Xilinxの 10 Gigabit Ethernet Subsystem、及び、Video Processing Subsystemを用いた。
+\section{FPGAの回路設計}
+
+本実装では、Xilinxの提供するIPである10 Gigabit Ethernet Subsystem\cite{xilinx-pg157}、及び、Video Processing Subsystem\cite{xilinx-pg230}を用いた。
+
+しかし、10 Gigabit Ethernet Subsystemは156.25MHzとなり、Video Processing Subsystemでは300MHzとなる。
+そのため、読み書きで独立したクロックに対応したFIFOを使用する。
+
+伝送図\ref{fig:fpga-video-ethernet-diagram}に示す。
+
+\begin{figure}[htbp]
+    \begin{center}
+        \includegraphics[bb=0 0 911 166,width=15.5cm]{img/fpga-video-ethernet-diagram.pdf}
+    \end{center}
+    \caption{Video Stream to Ethernet Packet Subsystem Diagram}
+    \label{fig:fpga-video-ethernet-diagram}
+\end{figure}
+
+受信図\ref{fig:fpga-ethernet-video-diagram}に示す。
+
+\begin{figure}[htbp]
+    \begin{center}
+        \includegraphics[bb=0 0 911 166,width=15.5cm]{img/fpga-ethernet-video-diagram.pdf}
+    \end{center}
+    \caption{Ethernet Packet to Video Stream Subsystem Diagram}
+    \label{fig:fpga-ethernet-video-diagram}
+\end{figure}
+
+\begin{table}[htbp]
+  \caption{10 Gigabit Ethernet Subsystem、及び、Video Processing Subsystemの接続のために実装したモジュール}
+  \label{tb:fpga-implement-modules}
+  \begin{center}
+  \begin{tabular}{c|p{12cm}}
+    \hline
+    Name               & Description \\\hline\hline
+    v\_axi4s\_eth2fifo.v & Ethernet Subsystemのクロックで、Ethernet Subsystemから送られてきた映像データをFIFOに書き込むモジュール \\\hline
+    v\_axi4s\_fifo2eth.v & Ethernet Subsystemのクロックで、FIFOから読み込んだの映像データをEthernet Subsystemに送るモジュール \\\hline
+    v\_axi4s\_vid2fifo.v & Video Processing Subsystemのクロックで、Video Processing Subsystemから送られてきた映像データをFIFOに書き込むモジュール \\\hline
+    v\_axi4s\_fifo2vid.v & Video Processing Subsystemのクロックで、FIFOから読み込んだの映像データをVideo Processing Subsystemに送るモジュール \\\hline
+  \end{tabular}\end{center}
+\end{table}
 
 % 表\ref{tb:pg236-vout-axi4-stream}
 % 表\ref{tb:pg235-vin-axi4-stream}
@@ -46,8 +78,6 @@
 % Xilinxの 10 Gigabit Ethernet Subsystem、及び、Video Processing Subsystem
 % これを解決するため、Xilinxの 10 Gigabit Ethernet Subsystem、及び、Video Processing Subsystem
 
-しかし、10 Gigabit Ethernet Subsystemは156.25MHzとなり、Video Processing Subsystemでは300MHzとなる。
-そのため、読み書きで独立したクロックに対応したFIFOを使用する。
 
 % また、
 
@@ -115,22 +145,6 @@
     tvalid & Input     & 1         & Valid \\\hline
   \end{tabular}\end{center}
 \end{table}
-
-\begin{figure}[htbp]
-    \begin{center}
-        \includegraphics[bb=0 0 911 166,width=15.5cm]{img/fpga-video-ethernet-diagram.pdf}
-    \end{center}
-    \caption{Video Stream to Ethernet Packet Subsystem Diagram}
-    \label{fig:fpga-video-ethernet-diagram}
-\end{figure}
-
-\begin{figure}[htbp]
-    \begin{center}
-        \includegraphics[bb=0 0 911 166,width=15.5cm]{img/fpga-ethernet-video-diagram.pdf}
-    \end{center}
-    \caption{Ethernet Packet to Video Stream Subsystem Diagram}
-    \label{fig:fpga-ethernet-video-diagram}
-\end{figure}
 
 図\ref{fig:fpga-video-packet}に、本実装で用いたパケット構造を示す。
 UDPのペイロードのビデオデータより前の区間が6byteなのは、Ethernetパケットを構築していく際に、ペイロードの先頭6byte目が丁度64bitの区切り目となるため、FPGAで処理する祭に効率が良いためである。
