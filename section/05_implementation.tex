@@ -157,6 +157,8 @@ UDPのペイロードのビデオデータより前の区間が6byteなのは、
     \label{fig:fpga-video-packet}
 \end{figure}
 
+また、UDPのパケットはFIFOにデータがある間生成され続けるため、IPパケット上の長さは00とし、ジャンボフレームとなる場合もある。
+
 また、図\ref{fig:fpga-ila-fifo-to-eth}、図\ref{fig:fpga-ila-hdmi}では、本実装を稼働させたときのILA（Integrated Logic Analyzer）とよばれる、FPGAの内部信号をモニターするためのツールを使った際の様子である。
 
 \begin{figure}[htbp]
