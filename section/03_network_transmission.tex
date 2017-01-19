@@ -40,13 +40,25 @@
 
 これらの点において評価を行う。
 
+\section{映像制作現場}
+
+現在の映像制作現場には、カメラ、スイッチャー、ディスプレイなどをはじめとする多くの機器がある。
+現在の中継現場における、機器同士の接続図を図\ref{fig:broadcast-diagram-on-sdi}に示す。
+実際の中継現場では、映像の記録を行うためのレコーダー、映像の入出力を切り替えるためのルーター、その他の機器など必要ではあるが、ここでは割愛する。
+
 \begin{figure}[htbp]
   \begin{center}
-    \includegraphics[bb=0 0 432 222,width=8.233cm]{img/broadcast-diagram-on-current.pdf}
+    \includegraphics[bb=0 0 432 222,width=8.233cm]{img/broadcast-diagram-on-sdi.pdf}
   \end{center}
   \caption{現在の映像制作現場における機器同士の接続図}
-  \label{fig:broadcast-diagram-on-current}
+  \label{fig:broadcast-diagram-on-sdi}
 \end{figure}
+
+4台のカメラを1台のスイッチャーに入力し、本線映像が出力される。
+入力されたソースの映像が複数並んだマルチビュー映像を見てオペレーターが操作することが一般的である。
+カメラとスイッチャー、スイッチャーとディスプレイは、それぞれSDIで伝送を行う。
+
+Video over IP化が進んだ将来、理想的な中継現場における機器同士の接続図を図\ref{fig:broadcast-diagram-on-ip}に示す。
 
 \begin{figure}[htbp]
   \begin{center}
@@ -56,25 +68,75 @@
   \label{fig:broadcast-diagram-on-ip}
 \end{figure}
 
+カメラとスイッチャー、スイッチャーとディスプレイは、それぞれIPで伝送を行う。
+カメラからスイッチャーには1本の光ファイバーで接続されているが、スイッチャーからはソース映像、本線映像、マルチビュー映像のために3本の光ファイバーで接続されている。
+設定解像度の使用する帯域によっては、1本で全ての映像を伝送できる場合もある。
 
 \section{映像制作現場における遅延の許容値の調査}
+
+映像制作現場において、オペーレーターが許容できる遅延の範囲を特定するため、遅延の許容範囲を調査する実験を行った。
+
+ブラウザ上で、キーボードの入力を利用した擬似的なスイッチャーの操作を行い、マルチビュー映像の出力を行うプログラムを開発した。
+プログラムで出力されるマルチビュー映像を図\ref{fig:mv-delay-virtual}のに示す。これは、実際の中継現場で利用されているマルチビュー映像とほぼ同じである。
+実験では、$0ms$から$499.99ms$までを$33.33ms$間隔で分けた16段階のステップにわけて、各段階で入力から表示までの遅延を与える。
+各段階で与える遅延については、心理的な判断を避けるため実験終了後まで表示を行わない。また、各段階で与える遅延は、実験ごとにランダムになっている。
+各段階では、被験者からの入力を15秒間受け付ける。各段階の終了後、被験者に「遅延を許容できる」か「遅延を許容できない」かを問う。
+
+この実験では、図\ref{fig:broadcast-diagram-on-ip}において、スイッチャーとマルチビュー映像を表示するためのディスプレイ間での遅延が許容できるかについて調査したことと同義である。
+
+\begin{figure}[htbp]
+  \begin{center}
+    \includegraphics[bb=0 0 1294 750,width=14cm]{img/mv-delay-virtual.png}
+  \end{center}
+  \caption{今回の実験でWebページ上に再現したマルチビュー映像}
+  \label{fig:mv-delay-virtual}
+\end{figure}
 
 \begin{figure}[htbp]
   \begin{center}
     \includegraphics[bb=0 0 1680 1050,width=14cm]{img/mv-delay-actual.png}
   \end{center}
-  \caption{実際の中継現場で利用されているスイッチャーのマルチビュー画面}
+  \caption{実際の中継現場で利用されているマルチビュー映像}
   \label{fig:mv-delay-actual}
 \end{figure}
+
+実験では、ブラウザのレンダリング時間
+
+\begin{table}[htbp]
+  \caption{表}
+  \label{tb:fpga-implement-modules}
+  \begin{center}
+  \begin{tabular}{r|l|l}
+    \hline
+    遅延時間（ミリ秒） & 遅延フレーム数 & 「遅延を許容できる」と回答した割合 \\\hline\hline
+    0               & 0フレーム     & 97.56097561 \\\hline
+    33.33           & 1フレーム     & 100         \\\hline
+    66.66           & 2フレーム     & 97.56097561 \\\hline
+    99.99           & 3フレーム     & 90.24390244 \\\hline
+    133.33          & 4フレーム     & 90.24390244 \\\hline
+    166.66          & 5フレーム     & 78.04878049 \\\hline
+    199.99          & 6フレーム     & 75.6097561  \\\hline
+    233.33          & 7フレーム     & 65.85365854 \\\hline
+    266.66          & 8フレーム     & 46.34146341 \\\hline
+    299.99          & 9フレーム     & 31.70731707 \\\hline
+    333.33          & 10フレーム    & 27.5862069  \\\hline
+    366.66          & 11フレーム    & 34.48275862 \\\hline
+    399.99          & 12フレーム    & 34.48275862 \\\hline
+    433.33          & 13フレーム    & 37.93103448 \\\hline
+    466.66          & 14フレーム    & 34.48275862 \\\hline
+    499.99          & 15フレーム    & 24.13793103 \\\hline
+  \end{tabular}\end{center}
+\end{table}
+
+
 \begin{figure}[htbp]
   \begin{center}
-    \includegraphics[bb=0 0 1294 750,width=14cm]{img/mv-delay-virtual.png}
+    \includegraphics[bb=0 0 600 371,width=14cm]{img/mv-delay-result-graph.png}
   \end{center}
-  \caption{今回の実験でWebページ上に再現したマルチビュー画面}
-  \label{fig:mv-delay-virtual}
+  \caption{グラフ}
+  \label{fig:mv-delay-result-graph}
 \end{figure}
 
-% 1
 \section{映像制作現場で求められるIP伝送装置の要件}
 % ファイルベースの映像編集では、ネットワークストレージを活用した環境
 % しかし、ライブでは、同軸ケーブルを利用してきました。これは、映像や音声を安定的に伝送することが求められているからです。
