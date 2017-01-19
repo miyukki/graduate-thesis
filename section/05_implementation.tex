@@ -9,19 +9,19 @@ IP伝送装置は、Xilinx KC705 評価ボード、HDMIインターフェース�
 本実装の概要を、図\ref{fig:fpga-implement-flow}に示す。
 
 \begin{figure}[htbp]
-    \begin{center}
-        \includegraphics[bb=0 0 841 299,width=15.5cm]{img/fpga-implement-flow.pdf}
-    \end{center}
-    \caption{ハードウェアによる実装の構成}
-    \label{fig:fpga-implement-flow}
+  \begin{center}
+    \includegraphics[bb=0 0 841 299,width=15.5cm]{img/fpga-implement-flow.pdf}
+  \end{center}
+  \caption{ハードウェアによる実装の構成}
+  \label{fig:fpga-implement-flow}
 \end{figure}
 
 \begin{figure}[htbp]
-    \begin{center}
-        \includegraphics[bb=0 0 137 161,width=4cm]{img/ted-4k-fmc-card.jpg}
-    \end{center}
-    \caption{TED HDMI 2.0 FMCカード (TB-FMCH-HDMI4K)}
-    \label{fig:ted-4k-fmc-card}
+  \begin{center}
+    \includegraphics[bb=0 0 137 161,width=4cm]{img/ted-4k-fmc-card.jpg}
+  \end{center}
+  \caption{TED HDMI 2.0 FMCカード (TB-FMCH-HDMI4K)}
+  \label{fig:ted-4k-fmc-card}
 \end{figure}
 
 今回の実装では評価を行うために、もう1台のXilinx KC705 評価ボード、Quad SFP/SFP+カードを用いて、送信したIPパケットを折り返しする装置を使用した。
@@ -37,21 +37,21 @@ IPパケットを折り返しする装置について、IP伝送装置と直接�
 伝送図\ref{fig:fpga-video-ethernet-diagram}に示す。
 
 \begin{figure}[htbp]
-    \begin{center}
-        \includegraphics[bb=0 0 911 166,width=15.5cm]{img/fpga-video-ethernet-diagram.pdf}
-    \end{center}
-    \caption{Video Stream to Ethernet Packet Subsystem Diagram}
-    \label{fig:fpga-video-ethernet-diagram}
+  \begin{center}
+    \includegraphics[bb=0 0 911 166,width=15.5cm]{img/fpga-video-ethernet-diagram.pdf}
+  \end{center}
+  \caption{Video Stream to Ethernet Packet Subsystem Diagram}
+  \label{fig:fpga-video-ethernet-diagram}
 \end{figure}
 
 受信図\ref{fig:fpga-ethernet-video-diagram}に示す。
 
 \begin{figure}[htbp]
-    \begin{center}
-        \includegraphics[bb=0 0 911 166,width=15.5cm]{img/fpga-ethernet-video-diagram.pdf}
-    \end{center}
-    \caption{Ethernet Packet to Video Stream Subsystem Diagram}
-    \label{fig:fpga-ethernet-video-diagram}
+  \begin{center}
+    \includegraphics[bb=0 0 911 166,width=15.5cm]{img/fpga-ethernet-video-diagram.pdf}
+  \end{center}
+  \caption{Ethernet Packet to Video Stream Subsystem Diagram}
+  \label{fig:fpga-ethernet-video-diagram}
 \end{figure}
 
 \begin{table}[htbp]
@@ -150,11 +150,11 @@ IPパケットを折り返しする装置について、IP伝送装置と直接�
 UDPのペイロードのビデオデータより前の区間が6byteなのは、Ethernetパケットを構築していく際に、ペイロードの先頭6byte目が丁度64bitの区切り目となるため、FPGAで処理する祭に効率が良いためである。
 
 \begin{figure}[htbp]
-    \begin{center}
-        \includegraphics[bb=0 0 643 122,width=15.5cm]{img/fpga-video-packet.pdf}
-    \end{center}
-    \caption{UDPペイロードのパケット構造}
-    \label{fig:fpga-video-packet}
+  \begin{center}
+    \includegraphics[bb=0 0 643 122,width=15.5cm]{img/fpga-video-packet.pdf}
+  \end{center}
+  \caption{UDPペイロードのパケット構造}
+  \label{fig:fpga-video-packet}
 \end{figure}
 
 また、UDPのパケットはFIFOにデータがある間生成され続けるため、IPパケット上の長さは00とし、ジャンボフレームとなる場合もある。
@@ -162,27 +162,27 @@ UDPのペイロードのビデオデータより前の区間が6byteなのは、
 また、図\ref{fig:fpga-ila-fifo-to-eth}、図\ref{fig:fpga-ila-hdmi}では、本実装を稼働させたときのILA（Integrated Logic Analyzer）とよばれる、FPGAの内部信号をモニターするためのツールを使った際の様子である。
 
 \begin{figure}[htbp]
-    \begin{center}
-        \includegraphics[bb=0 0 612 792,width=15.5cm]{img/ethlogic_template_ss.pdf}
-    \end{center}
-    \caption{ブロック}
-    \label{fig:ethlogic_template_ss}
+  \begin{center}
+    \includegraphics[bb=0 0 612 792,width=15.5cm]{img/ethlogic_template_ss.pdf}
+  \end{center}
+  \caption{ブロック}
+  \label{fig:ethlogic_template_ss}
 \end{figure}
 
 \begin{figure}[htbp]
-    \begin{center}
-        \includegraphics[bb=0 0 1201 438,width=15.5cm]{img/fpga-ila-fifo-to-eth.png}
-    \end{center}
-    \caption{ILAによるIP伝送時のFIFOとEthernet Subsystemのデータのダンプ}
-    \label{fig:fpga-ila-fifo-to-eth}
+  \begin{center}
+    \includegraphics[bb=0 0 1201 438,width=15.5cm]{img/fpga-ila-fifo-to-eth.png}
+  \end{center}
+  \caption{ILAによるIP伝送時のFIFOとEthernet Subsystemのデータのダンプ}
+  \label{fig:fpga-ila-fifo-to-eth}
 \end{figure}
 
 \begin{figure}[htbp]
-    \begin{center}
-        \includegraphics[bb=0 0 1199 246,width=15.5cm]{img/fpga-ila-hdmi.png}
-    \end{center}
-    \caption{ILAによるIP伝送時のHDMI入出力のデータのダンプ}
-    \label{fig:fpga-ila-hdmi}
+  \begin{center}
+    \includegraphics[bb=0 0 1199 246,width=15.5cm]{img/fpga-ila-hdmi.png}
+  \end{center}
+  \caption{ILAによるIP伝送時のHDMI入出力のデータのダンプ}
+  \label{fig:fpga-ila-hdmi}
 \end{figure}
 
 % \begin{figure}[htbp]
