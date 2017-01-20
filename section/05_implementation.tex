@@ -30,29 +30,13 @@ IPパケットを折り返しする装置について、IP伝送装置と直接�
 \section{FPGAの回路設計}
 
 本実装では、Xilinxの提供するIPである10 Gigabit Ethernet Subsystem\cite{xilinx-pg157}、及び、Video Processing Subsystem\cite{xilinx-pg230}を用いた。
+本研究のために実装をした箇所は、この2つのIPに対してデータを受け渡しするモジュールとなる。
 
-しかし、10 Gigabit Ethernet Subsystemは156.25MHzとなり、Video Processing Subsystemでは300MHzとなる。
-そのため、読み書きで独立したクロックに対応したFIFOを使用する。
+しかし、10 Gigabit Ethernet Subsystemの基準クロックは64bit幅の設定で156.25MHzとなり、Video Processing Subsystemの基準クロックは300MHzとなる。
+互いの基準クロックが異なるため、データをそのまま受け渡しすることはできない。
+この問題を解決するため、読み書きで独立したクロックに対応したFIFOを使用する。
 
-伝送図\ref{fig:fpga-video-ethernet-diagram}に示す。
-
-\begin{figure}[htbp]
-  \begin{center}
-    \includegraphics[bb=0 0 911 166,width=15.5cm]{img/fpga-video-ethernet-diagram.pdf}
-  \end{center}
-  \caption{Video Stream to Ethernet Packet Subsystem Diagram}
-  \label{fig:fpga-video-ethernet-diagram}
-\end{figure}
-
-受信図\ref{fig:fpga-ethernet-video-diagram}に示す。
-
-\begin{figure}[htbp]
-  \begin{center}
-    \includegraphics[bb=0 0 911 166,width=15.5cm]{img/fpga-ethernet-video-diagram.pdf}
-  \end{center}
-  \caption{Ethernet Packet to Video Stream Subsystem Diagram}
-  \label{fig:fpga-ethernet-video-diagram}
-\end{figure}
+受信側と送信側で、10 Gigabit Ethernet SubsystemとVideo Processing Subsystem間の受け渡しを行うため、次の4つのモジュールを実装した。
 
 \begin{table}[htbp]
   \caption{10 Gigabit Ethernet Subsystem、及び、Video Processing Subsystemの接続のために実装したモジュール}
@@ -65,6 +49,48 @@ IPパケットを折り返しする装置について、IP伝送装置と直接�
     v\_axi4s\_fifo2eth.v & Ethernet Subsystemのクロックで、FIFOから読み込んだの映像データをEthernet Subsystemに送るモジュール \\\hline
     v\_axi4s\_vid2fifo.v & Video Processing Subsystemのクロックで、Video Processing Subsystemから送られてきた映像データをFIFOに書き込むモジュール \\\hline
     v\_axi4s\_fifo2vid.v & Video Processing Subsystemのクロックで、FIFOから読み込んだの映像データをVideo Processing Subsystemに送るモジュール \\\hline
+  \end{tabular}\end{center}
+\end{table}
+
+送信側のモジュールの接続フローを図\ref{fig:fpga-video-ethernet-diagram}に示す。
+
+\begin{figure}[htbp]
+  \begin{center}
+    \includegraphics[bb=0 0 911 166,width=15.5cm]{img/fpga-video-ethernet-diagram.pdf}
+  \end{center}
+  \caption{Video Stream to Ethernet Packet Subsystem Diagram}
+  \label{fig:fpga-video-ethernet-diagram}
+\end{figure}
+
+Video Processing Subsystemが出力するtdataの有効データ幅は32bitである。
+しかし、表\ref{tb:fpga-axi4-stream}に示すとおり、tlastがラインの終了、tuserがフレームの開始を表す。
+FIFOにデータだけを書き込んだ場合、ラインの終了、フレームの開始のタイミングが失われることとなる。
+そのため、Axi4-StreamがFIFOにtdataの他、tlast, tuser, tvalidを書き込む。
+
+% どちらもAxi4-Stream規格での通信となるが、
+
+受信側のモジュールの接続フローを図\ref{fig:fpga-ethernet-video-diagram}に示す。
+
+\begin{figure}[htbp]
+  \begin{center}
+    \includegraphics[bb=0 0 911 166,width=15.5cm]{img/fpga-ethernet-video-diagram.pdf}
+  \end{center}
+  \caption{Ethernet Packet to Video Stream Subsystem Diagram}
+  \label{fig:fpga-ethernet-video-diagram}
+\end{figure}
+
+\begin{table}[htbp]
+  \caption{Video Processing SubsystemのAxi4-Streamインターフェース}
+  \label{tb:fpga-axi4-stream}
+  \begin{center}
+  \begin{tabular}{l|c|l}
+    \hline
+    Name   & Width     & Description \\\hline\hline
+    tdata  & 3*BPC\footnote{Max Bits Per Component}*PPC\footnote{Pixels Per Clock} & Data \\\hline
+    tlast  & 1         & End of line \\\hline
+    tready & 1         & Ready \\\hline
+    tuser  & 1         & Start of frame \\\hline
+    tvalid & 1         & Valid \\\hline
   \end{tabular}\end{center}
 \end{table}
 
@@ -86,65 +112,35 @@ IPパケットを折り返しする装置について、IP伝送装置と直接�
 % \cite{xilinx-pg236}
 
 % \begin{table}[htbp]
-%   \begin{minipage}[t]{0.5\hsize}
-%     \caption{HDMI RX SubsystemのAxi4-Streamインターフェース \cite{xilinx-pg236}より抜粋}
-%     \label{tb:pg236-vout-axi4-stream}
-%     \begin{center}
-%     \begin{tabular}{l|c|c|l}
-%       \hline
-%       Name   & Direction & Width     & Description \\\hline\hline
-%       tdata  & Output    & 3* BPC*PPC & Data \\\hline
-%       tlast  & Output    & 1         & End of line \\\hline
-%       tready & Input     & 1         & Ready \\\hline
-%       tuser  & Output    & 1         & Start of frame \\\hline
-%       tvalid & Output    & 1         & Valid \\\hline
-%     \end{tabular}\end{center}
-%   \end{minipage}
-%   \begin{minipage}[t]{0.5\hsize}
-%     \caption{HDMI TX SubsystemのAxi4-Streamインターフェース \cite{xilinx-pg235}より抜粋}
-%     \label{tb:pg235-vin-axi4-stream}
-%     \begin{center}
-%     \begin{tabular}{l|c|c|l}
-%       \hline
-%       Name   & Direction & Width     & Description \\\hline\hline
-%       tdata  & Input     & 3* BPC*PPC & Data \\\hline
-%       tlast  & Input     & 1         & End of line \\\hline
-%       tready & Output    & 1         & Ready \\\hline
-%       tuser  & Input     & 1         & Start of frame \\\hline
-%       tvalid & Input     & 1         & Valid \\\hline
-%     \end{tabular}\end{center}
-%   \end{minipage}
+%   \caption{HDMI RX SubsystemのAxi4-Streamインターフェース \cite{xilinx-pg236}より抜粋}
+%   \label{tb:pg236-vout-axi4-stream}
+%   \begin{center}
+%   \begin{tabular}{l|c|c|l}
+%     \hline
+%     Name   & Direction & Width     & Description \\\hline\hline
+%     tdata  & Output    & 3*BPC\footnote{Max Bits Per Component}*PPC\footnote{Pixels Per Clock} & Data \\\hline
+%     tlast  & Output    & 1         & End of line \\\hline
+%     tready & Input     & 1         & Ready \\\hline
+%     tuser  & Output    & 1         & Start of frame \\\hline
+%     tvalid & Output    & 1         & Valid \\\hline
+%   \end{tabular}\end{center}
 % \end{table}
-
-\begin{table}[htbp]
-  \caption{HDMI RX SubsystemのAxi4-Streamインターフェース \cite{xilinx-pg236}より抜粋}
-  \label{tb:pg236-vout-axi4-stream}
-  \begin{center}
-  \begin{tabular}{l|c|c|l}
-    \hline
-    Name   & Direction & Width     & Description \\\hline\hline
-    tdata  & Output    & 3*BPC*PPC & Data \\\hline
-    tlast  & Output    & 1         & End of line \\\hline
-    tready & Input     & 1         & Ready \\\hline
-    tuser  & Output    & 1         & Start of frame \\\hline
-    tvalid & Output    & 1         & Valid \\\hline
-  \end{tabular}\end{center}
-\end{table}
-
-\begin{table}[htbp]
-  \caption{HDMI TX SubsystemのAxi4-Streamインターフェース \cite{xilinx-pg235}より抜粋}
-  \label{tb:pg235-vin-axi4-stream}
-  \begin{center}
-  \begin{tabular}{l|c|c|l}
-    \hline
-    Name   & Direction & Width     & Description \\\hline\hline
-    tdata  & Input     & 3*BPC*PPC & Data \\\hline
-    tlast  & Input     & 1         & End of line \\\hline
-    tready & Output    & 1         & Ready \\\hline
-    tuser  & Input     & 1         & Start of frame \\\hline
-    tvalid & Input     & 1         & Valid \\\hline
-  \end{tabular}\end{center}
-\end{table}
+%
+%
+% \begin{table}[htbp]
+%   \caption{HDMI TX SubsystemのAxi4-Streamインターフェース \cite{xilinx-pg235}より抜粋}
+%   \label{tb:pg235-vin-axi4-stream}
+%   \begin{center}
+%   \begin{tabular}{l|c|c|l}
+%     \hline
+%     Name   & Direction & Width     & Description \\\hline\hline
+%     tdata  & Input     & 3*BPC*PPC & Data \\\hline
+%     tlast  & Input     & 1         & End of line \\\hline
+%     tready & Output    & 1         & Ready \\\hline
+%     tuser  & Input     & 1         & Start of frame \\\hline
+%     tvalid & Input     & 1         & Valid \\\hline
+%   \end{tabular}\end{center}
+% \end{table}
 
 図\ref{fig:fpga-video-packet}に、本実装で用いたパケット構造を示す。
 UDPのペイロードのビデオデータより前の区間が6byteなのは、Ethernetパケットを構築していく際に、ペイロードの先頭6byte目が丁度64bitの区切り目となるため、FPGAで処理する祭に効率が良いためである。
