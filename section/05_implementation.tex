@@ -213,21 +213,22 @@ v\_axi4s\_fifo2eth.vによって、emptyの立ち下がりの1クロック遅れ
   \label{fig:fpga-first-pixel-waveform}
 \end{figure}
 
-図\ref{fig:fpga-ila-fifo-to-eth}、図\ref{fig:fpga-ila-hdmi}では、本実装を稼働させたときのILA（Integrated Logic Analyzer）とよばれる、FPGAの内部信号をモニターするためのツールを使った際の様子である。
+% 図\ref{fig:fpga-ila-fifo-to-eth}、
+図\ref{fig:fpga-ila-hdmi}では、本実装を稼働させたときのILA（Integrated Logic Analyzer）とよばれる、FPGAの内部信号をモニターするためのツールを使った際に、HDMIの入力と出力を検証した様子である。
 前述の通り、almost\_emptyの立ち下がりを合図に、パケットを生成してから映像データを書き込むまでに一定のクロックが経過するため、FIFOへの書き込みがバッファリングされる。
-図\ref{fig:fpga-ila-hdmi}では、hdmi\_rx\_tvalidが頻繁に立ち上がりと立ち下がりを繰り返しているのに対し、hdmi\_tx\_tvalidはある程度まとまった周期で立ち上がりをしているのが確認できる。
+hdmi\_rx\_tvalidが頻繁に立ち上がりと立ち下がりを繰り返しているのに対し、hdmi\_tx\_tvalidはある程度まとまった周期で立ち上がりをしている様子が確認できる。
+
+% \begin{figure}[htbp]
+%   \begin{center}
+%     \includegraphics[bb=0 0 1201 438,width=15.5cm]{img/fpga-ila-fifo-to-eth.png}
+%   \end{center}
+%   \caption{ILAによるIP伝送時のFIFOとEthernet Subsystemのデータのダンプ}
+%   \label{fig:fpga-ila-fifo-to-eth}
+% \end{figure}
 
 \begin{figure}[htbp]
   \begin{center}
-    \includegraphics[bb=0 0 1201 438,width=15.5cm]{img/fpga-ila-fifo-to-eth.png}
-  \end{center}
-  \caption{ILAによるIP伝送時のFIFOとEthernet Subsystemのデータのダンプ}
-  \label{fig:fpga-ila-fifo-to-eth}
-\end{figure}
-
-\begin{figure}[htbp]
-  \begin{center}
-    \includegraphics[bb=0 0 1199 246,width=15.5cm]{img/fpga-ila-hdmi.png}
+    \includegraphics[bb=0 0 1199 246,width=22.5cm,angle=270]{img/fpga-ila-hdmi.png}
   \end{center}
   \caption{ILAによるIP伝送時のHDMI入出力のデータのダンプ}
   \label{fig:fpga-ila-hdmi}
