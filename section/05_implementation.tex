@@ -30,7 +30,7 @@ IP伝送装置は、Xilinx KC705 評価ボード\cite{xilinx-kc705}、HDMIイン
   \begin{center}
   \begin{tabular}{c||c}
     \hline
-    OS  & Ubuntu 14.04 Desktop \\\hline
+    OS  & Vivado 2016.2 \\\hline
     CPU & Intel Core i7-4770 @ 3.40GHz \\\hline
     RAM & 8GB                  \\\hline
   \end{tabular}\end{center}
@@ -197,13 +197,13 @@ UDPのペイロードのビデオデータより前の区間が6byteなのは、
 
 また、図\ref{fig:fpga-ila-fifo-to-eth}、図\ref{fig:fpga-ila-hdmi}では、本実装を稼働させたときのILA（Integrated Logic Analyzer）とよばれる、FPGAの内部信号をモニターするためのツールを使った際の様子である。
 
-\begin{figure}[htbp]
-  \begin{center}
-    \includegraphics[bb=0 0 612 792,width=15.5cm]{img/ethlogic_template_ss.pdf}
-  \end{center}
-  \caption{ブロック}
-  \label{fig:ethlogic_template_ss}
-\end{figure}
+% \begin{figure}[htbp]
+%   \begin{center}
+%     \includegraphics[bb=0 0 612 792,width=15.5cm]{img/ethlogic_template_ss.pdf}
+%   \end{center}
+%   \caption{ブロック}
+%   \label{fig:ethlogic_template_ss}
+% \end{figure}
 
 \begin{figure}[htbp]
   \begin{center}
@@ -224,11 +224,11 @@ UDPのペイロードのビデオデータより前の区間が6byteなのは、
 \begin{figure}[htbp]
   \begin{center}
     % \fbox{
-    \includegraphics[bb=0 0 1062 501,width=22.5cm,angle=270]{img/fpga-waveform.pdf}
+    \includegraphics[bb=0 0 942 502,width=22.5cm,angle=270]{img/fpga-first-pixel-waveform.pdf}
     % }
   \end{center}
-  \caption{ILAによるIP伝送時のHDMI入出力のデータのダンプ}
-  \label{fig:fpga-waveform}
+  \caption{HDMI 1.4/2.0 Receiver SubsystemからFIFOを経由、Axi4-Streamの映像データの流れ}
+  \label{fig:fpga-first-pixel-waveform}
 \end{figure}
 
 % \begin{figure}[htbp]
@@ -241,3 +241,23 @@ UDPのペイロードのビデオデータより前の区間が6byteなのは、
 
 特殊なバッファリング機構は用意していないが、FIFOにデータが入っているかを示す信号（almost\_emptyの立ち下がり）を合図に、パケットを生成する祭に一定のクロックが経過するため、その分のFIFOへの書き込みのバッファリングが行われる。
 そのため、図\ref{fig:fpga-ila-hdmi}では、hdmi\_rx\_tvalidが頻繁に立ち上がりと立ち下がりを繰り返しているのに対し、hdmi\_tx\_tvalidはある程度まとまった周期で立ち上がりをしているのが確認できる。
+
+\begin{table}[htbp]
+  \caption{論理合成後のリソース}
+  \label{tb:fpga-post-implementation-utilization}
+  \begin{center}
+  \begin{tabular}{l|r|r|r}
+    \hline
+    Resource & 使用     & 全体   & 使用率   \\\hline\hline
+    LUT      &  48474 & 203800 & 23.79\% \\\hline
+    LUTRAM   &   4696 &  64000 &  7.34\% \\\hline
+    FF       &  55768 & 407600 & 13.68\% \\\hline
+    BRAM     & 310.50 &    445 & 69.78\% \\\hline
+    DSP      &     23 &    840 &  2.74\% \\\hline
+    IO       &     40 &    500 &  8.00\% \\\hline
+    GT       &      4 &     16 & 25.00\% \\\hline
+    BUFG     &     20 &     32 & 62.50\% \\\hline
+    MMCM     &      3 &     10 & 30.00\% \\\hline
+    PLL      &      1 &     10 & 10.00\% \\\hline
+  \end{tabular}\end{center}
+\end{table}
