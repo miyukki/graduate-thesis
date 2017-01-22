@@ -41,17 +41,16 @@ IPパケットを折り返しする装置について、IP伝送装置と直接�
 
 \section{FPGAの回路設計}
 
-本実装では、Xilinxの提供するIPである10 Gigabit Ethernet Subsystem\cite{xilinx-pg157}、Video PHY Controller\cite{xilinx-pg230}、HDMI 1.4/2.0 Transmitter Subsystem\cite{xilinx-pg235}、及び、HDMI 1.4/2.0 Receiver Subsystem\cite{xilinx-pg236}、FIFO Generator\cite{xilinx-pg057}を用いた。
+本実装は、Xilinxが提供しているKintex-7シリーズ向けのHDMI 2.0のリファレンス実装であるxapp1287\cite{xilinx-xapp1287}をベースとている。
+Xilinxの提供するIPである10 Gigabit Ethernet Subsystem\cite{xilinx-pg157}、Video PHY Controller\cite{xilinx-pg230}、HDMI 1.4/2.0 Transmitter Subsystem\cite{xilinx-pg235}、及び、HDMI 1.4/2.0 Receiver Subsystem\cite{xilinx-pg236}、FIFO Generator\cite{xilinx-pg057}が使用されている。
 本研究のために、新たに実装をした箇所は、これらのIPに対してデータを受け渡しするモジュールとなる。
-
-Xilinxが提供しているKintex-7シリーズ向けのHDMI 2.0のリファレンス実装であるxapp1287\cite{xilinx-xapp1287}をベースとている。
 FPGAの回路全体のブロックダイアグラムを図\label{fig:fpga-whole-diagram}に示す。
 
 \begin{figure}[htbp]
   \begin{center}
     \includegraphics[bb=0 0 452 229,width=15.5cm]{img/fpga-whole-diagram.pdf}
   \end{center}
-  \caption{FPGA回路全体のブロックダイアグラム}
+  \caption{FPGA回路全体のブロックダイアグラム（図は後ほど書く）}
   \label{fig:fpga-whole-diagram}
 \end{figure}
 
@@ -87,9 +86,9 @@ FPGAの回路全体のブロックダイアグラムを図\label{fig:fpga-whole-
 \end{figure}
 
 \newpage
-読み書きで独立したクロックの他に、入出力のデータ幅が異なっており、入力のデータ幅は35bit、出力のデータ幅は倍の70bitとなっている。
-Video Processing Subsystemは300MHzで35bitのデータを書き込み、10 Gigabit Ethernet Subsystemは156.25MHzのデータを読み込むため、
-Ethernet Subsystemのほうがクロックが早いため、FIFOがフル状態になることはない。
+読み書きで独立したクロックの他に、入出力のデータ幅が異なっており、入力のデータ幅は35bit、出力のデータ幅は倍の70bitとなっている。理由は後述する。
+Video Processing Subsystemは300MHzで35bitのデータを書き込み、10 Gigabit Ethernet Subsystemは156.25MHzのデータを読み込む。
+10 Gigabit Ethernet Subsystemのクロックが早いため、FIFOがフル状態になることはない。
 また、almost\_emptyフラグを使用しており、emptyになる1クロック前に知ることが可能である。
 
 送信側のモジュールの接続を図\ref{fig:fpga-video-ethernet-diagram}に示す。
@@ -112,10 +111,10 @@ Ethernet Subsystemのほうがクロックが早いため、FIFOがフル状態�
   \label{fig:fpga-ethernet-video-diagram}
 \end{figure}
 
-Video Processing Subsystemが出力するAxi4-Streamのtdataが映像データを表し、有効データ幅は32bitである。
+Video Processing Subsystemが出力するAxi4-Streamのtdataは映像データを表し、有効データ幅は32bitである。
 また、表\ref{tb:fpga-axi4-stream}に示すとおり、tlastがラインの終了、tuserがフレームの開始を表す。
 FIFOに映像データだけを書き込んだ場合、ラインの終了、フレームの開始のタイミングが失われることとなる。
-この問題を解決するため、FIFOにはAxi4-Streamのtdata、tlast, tuser, tvalidを書き込む。
+この問題を解決するため、FIFOにはAxi4-Streamのtdataの他に、tlast、tuser、tvalidも書き込む。
 
 \begin{table}[htbp]
   \caption{Video Processing SubsystemのAxi4-Streamインターフェース}
@@ -182,28 +181,41 @@ FIFOに映像データだけを書き込んだ場合、ラインの終了、フ�
 %   \end{tabular}\end{center}
 % \end{table}
 
-図\ref{fig:fpga-video-packet}に、本実装で用いたパケット構造を示す。
-UDPのペイロードのビデオデータより前の区間が6byteなのは、Ethernetパケットを構築していく際に、ペイロードの先頭6byte目が丁度64bitの区切り目となるため、FPGAで処理する祭に効率が良いためである。
+図\ref{fig:fpga-video-packet}に、本実装で用いたUDPデータの構造を示す。
 
 \begin{figure}[htbp]
   \begin{center}
     \includegraphics[bb=0 0 643 122,width=15.5cm]{img/fpga-video-packet.pdf}
   \end{center}
-  \caption{UDPペイロードのパケット構造}
+  \caption{UDPデータの構造}
   \label{fig:fpga-video-packet}
 \end{figure}
 
-また、UDPのパケットはFIFOにデータがある間生成され続けるため、IPパケット上の長さは00とし、ジャンボフレームとなる場合もある。
+UDPデータの映像データより前のヘッダー区間は6byteとなっている。
+これは、FPGA内部でEthernetパケットを構築していく際に、データの先頭6byteが丁度64bitの区切り目となるためであり、FPGAで処理する祭に効率が良い。
+UDPのパケットはFIFOにデータがある間生成され続けるため、IPパケット上の長さは00としている。映像データによってはジャンボフレームとなる場合もある。
 
-また、図\ref{fig:fpga-ila-fifo-to-eth}、図\ref{fig:fpga-ila-hdmi}では、本実装を稼働させたときのILA（Integrated Logic Analyzer）とよばれる、FPGAの内部信号をモニターするためのツールを使った際の様子である。
+各モジュールで映像データがどのように扱われるかを波形イメージとして、図\ref{fig:fpga-first-pixel-waveform}に示す。
 
-% \begin{figure}[htbp]
-%   \begin{center}
-%     \includegraphics[bb=0 0 612 792,width=15.5cm]{img/ethlogic_template_ss.pdf}
-%   \end{center}
-%   \caption{ブロック}
-%   \label{fig:ethlogic_template_ss}
-% \end{figure}
+HDMI 1.4/2.0 Receiver Subsystemから出力されるデータは、v\_axi4s\_vid2fifo.vによって、1クロック遅れてFIFOに書き込まれる。
+FIFOはある程度のバッファリングが行われるため、一定クロック経過後にemptyが立ち下がり、データが読み取れる状態となる。
+v\_axi4s\_fifo2eth.vによって、emptyの立ち下がりの1クロック遅れで、Ethernet、IP、UDPヘッダーの生成を行う。ヘッダーの生成中にも映像データがFIFOにたまり続ける。
+ヘッダーの生成がおわる1クロック前にrd\_enを立ち上げ、FIFOのデータを読み取る。UDPデータとして映像データを書き込み、almost\_emptyの立ち下がりでrd\_enを立ち下げる。
+% 10 Gigabit Ethernet Subsystem
+
+\begin{figure}[htbp]
+  \begin{center}
+    % \fbox{
+    \includegraphics[bb=0 0 942 502,width=22.5cm,angle=270]{img/fpga-first-pixel-waveform.pdf}
+    % }
+  \end{center}
+  \caption{映像データの流れ}
+  \label{fig:fpga-first-pixel-waveform}
+\end{figure}
+
+図\ref{fig:fpga-ila-fifo-to-eth}、図\ref{fig:fpga-ila-hdmi}では、本実装を稼働させたときのILA（Integrated Logic Analyzer）とよばれる、FPGAの内部信号をモニターするためのツールを使った際の様子である。
+前述の通り、almost\_emptyの立ち下がりを合図に、パケットを生成してから映像データを書き込むまでに一定のクロックが経過するため、FIFOへの書き込みがバッファリングされる。
+図\ref{fig:fpga-ila-hdmi}では、hdmi\_rx\_tvalidが頻繁に立ち上がりと立ち下がりを繰り返しているのに対し、hdmi\_tx\_tvalidはある程度まとまった周期で立ち上がりをしているのが確認できる。
 
 \begin{figure}[htbp]
   \begin{center}
@@ -221,16 +233,6 @@ UDPのペイロードのビデオデータより前の区間が6byteなのは、
   \label{fig:fpga-ila-hdmi}
 \end{figure}
 
-\begin{figure}[htbp]
-  \begin{center}
-    % \fbox{
-    \includegraphics[bb=0 0 942 502,width=22.5cm,angle=270]{img/fpga-first-pixel-waveform.pdf}
-    % }
-  \end{center}
-  \caption{映像データの流れ}
-  \label{fig:fpga-first-pixel-waveform}
-\end{figure}
-
 % \begin{figure}[htbp]
 %     \begin{center}
 %         \includegraphics[bb=0 0 1197 246,width=15.5cm]{img/fpga-ila-hdmi-x2.png}
@@ -239,16 +241,13 @@ UDPのペイロードのビデオデータより前の区間が6byteなのは、
 %     \label{fig:fpga-ila-hdmi-x2}
 % \end{figure}
 
-特殊なバッファリング機構は用意していないが、FIFOにデータが入っているかを示す信号（almost\_emptyの立ち下がり）を合図に、パケットを生成する祭に一定のクロックが経過するため、その分のFIFOへの書き込みのバッファリングが行われる。
-そのため、図\ref{fig:fpga-ila-hdmi}では、hdmi\_rx\_tvalidが頻繁に立ち上がりと立ち下がりを繰り返しているのに対し、hdmi\_tx\_tvalidはある程度まとまった周期で立ち上がりをしているのが確認できる。
-
 \begin{table}[htbp]
   \caption{論理合成後のリソース}
   \label{tb:fpga-post-implementation-utilization}
   \begin{center}
   \begin{tabular}{l|r|r|r}
     \hline
-    Resource & 使用     & 全体   & 使用率   \\\hline\hline
+    リソース  & 使用    & 全体    & 使用率   \\\hline\hline
     LUT      &  48474 & 203800 & 23.79\% \\\hline
     LUTRAM   &   4696 &  64000 &  7.34\% \\\hline
     FF       &  55768 & 407600 & 13.68\% \\\hline
