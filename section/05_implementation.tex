@@ -24,20 +24,20 @@ IP伝送装置は、Xilinx KC705 評価ボード\cite{xilinx-kc705}、HDMIイン
   \label{fig:ted-4k-fmc-card}
 \end{figure}
 
-\begin{table}[htbp]
-  \caption{ソフトウェアによる実装を検証したPCの構成}
-  \label{tb:software-specification}
-  \begin{center}
-  \begin{tabular}{c||c}
-    \hline
-    OS  & Vivado 2016.2 \\\hline
-    CPU & Intel Core i7-4770 @ 3.40GHz \\\hline
-    RAM & 8GB                  \\\hline
-  \end{tabular}\end{center}
-\end{table}
+% \begin{table}[htbp]
+%   \caption{ハードウェアによる実装を行ったPCの構成}
+%   \label{tb:software-specification}
+%   \begin{center}
+%   \begin{tabular}{c||c}
+%     \hline
+%     ソフトウェア  & Vivado 2016.2 \\\hline
+%   \end{tabular}\end{center}
+% \end{table}
 
 今回の構成では、IP伝送装置とは別に1台のXilinx KC705 評価ボード、Quad SFP/SFP+カードを用いて、送信したIPパケットを折り返しする装置を使用した。
 IPパケットを折り返しする装置について、IP伝送装置と直接の関係はないため、ここでの解説は割愛する。
+
+本実装では、論理合成ツールとしてXilinx Vivado 2016.2を使用した。また、開発言語としてVerilog HDLを使用した。
 
 \section{FPGAの回路設計}
 
@@ -54,8 +54,7 @@ FPGAの回路全体のブロックダイアグラムを図\label{fig:fpga-whole-
   \label{fig:fpga-whole-diagram}
 \end{figure}
 
-\newpage
-受信側と送信側で、10 Gigabit Ethernet SubsystemとVideo Processing Subsystem間の受け渡しを行うため、次の4つのモジュールを実装した。
+受信側と送信側で、10 Gigabit Ethernet SubsystemとVideo Processing Subsystem間の受け渡しを行うため、表\ref{tb:fpga-implement-modules}に示す4つのモジュールを実装した。
 
 \begin{table}[htbp]
   \caption{10 Gigabit Ethernet Subsystem、及び、Video Processing Subsystemの接続のために実装したモジュール}

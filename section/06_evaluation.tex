@@ -6,24 +6,75 @@
 
 \section{概要}
 
-\ref{chap:software-experimentation}章、\ref{chap:implementation}章
+\ref{chap:software-experimentation}章と\ref{chap:implementation}章で実装したIP伝送装置を動作させ、それぞれの項目について評価を行う。
 
-AAA
+% AAA
 
 \section{トラフィック}
 
-トラフィックを計測した
+本節では、実装したIP伝送装置が理想通りにパケットの送信を行っているかを確認するために、Linux PCを用いてトラフィックを計測した。
 
 \subsection{計測手法}
 
-ソフトウェア実装の場合はにおける受信PC、ハードウェア実装の場合はIP分配折り返しボードに接続されたデバッグ用のPCで受信バイト数、受信パケット数、破棄パケット数を計測した。
-インターフェースの情報は/proc/net/devを監視し、rrdtoolを使い集計、グラフとして出力した。
+ソフトウェア実装の場合はにおける受信PC、ハードウェア実装の場合はIP分配折り返しボードに接続されたデバッグ用のPCで、受信バイト数、受信パケット数、破棄パケット数を計測した。
+ネットワークインターフェースの情報は/proc/net/devを監視した。rrdtoolを使い集計し、グラフとして出力した。
 
 \subsection{計測結果}
 
+ソフトウェア実装における計測結果を、図\ref{fig:lo-bytes-graph}と\ref{fig:lo-packets-graph}に示す。
+
+図\ref{fig:lo-bytes-graph}で示した受信バイトのグラフでは、平均489MBpsとなっている。
+ソフトウェア実装での映像データはYCbCr 4:2:2の色深度が16bitであるため、ピクセルあたり2bytesとなる。% また、フレームレートは30Pである。
+理想的な1秒あたりの受信バイト数は、次のように求められる。
+
+\[ 3840 * 2160 * 2 * 30 = 497664000 \]
+
+理想的な1秒あたりの受信バイト数を満たしていない。
+この原因としては、送信PCがデータの送信に追いつかない場合に自動的にフレームをドロップさせる処理によるものだと考えられる。
+
+ハードウェア実装における計測結果を、図\ref{fig:enp2s0f1-bytes-graph}と\ref{fig:enp2s0f1-packets-graph}に示す。
+
+図\ref{fig:enp2s0f1-packets-graph}で示した受信パケットのグラフでは、パケットがドロップしている事が確認できる。
+これは、カーネルのネットワーク処理が、FPGAのハードウェアによる出力の速度に追いつけなかったためだと考えられる。
+ハードウェア実装での映像データはYUV 422でピクセルあたり12bitとなる。
+理想的な1秒あたりの受信バイト数は、次のように求められる。
+
+\[ 3840 * 2160 * 3 / 2 * 30 = 373248000 \]
+
+% 176*5437845 = 957060720
+
+1パケットあたりの平均バイト数は、次のように求められる。
+
+\[ 694800066.36 / 5437845.10 = 127.77 \]
+
+そのため、本来PCが受信してたであろうバイト数は、次のように求められる。
+
+\[ (5437845.10 + 1494269.10) * 127.77 = 885716231 \]
+
+127.77-56
+
+0.5617
+
+% 694800066.36/(5437845.10-1494269.10) = 176.bytes
+
+
+% HDMIのデータとなるので、4:2:2でもRGBと帯域は変わらない
+% 3840 * 2160 * 4 * 30=
+%
+% 694800066/5437845
+% 平均127.77bytesのパケットとなる
+%
+% 190,924,575bytes
+%
+% 885,724,641bytesではないか
+%
+% 1-(14/127.77)=0.890
+% 1-(56/127.77)=0.561
+
+\newpage
 \begin{figure}[htbp]
   \begin{center}
-    \includegraphics[bb=0 0 597 374,width=12cm]{img/lo-bytes-graph.png}
+    \includegraphics[bb=0 0 597 374,width=11.8cm]{img/lo-bytes-graph.png}
   \end{center}
   \caption{ソフトウェア実装における伝送中の受信バイトのグラフ}
   \label{fig:lo-bytes-graph}
@@ -31,21 +82,16 @@ AAA
 
 \begin{figure}[htbp]
   \begin{center}
-    \includegraphics[bb=0 0 597 388,width=12cm]{img/lo-packets-graph.png}
+    \includegraphics[bb=0 0 597 388,width=11.8cm]{img/lo-packets-graph.png}
   \end{center}
   \caption{ソフトウェア実装における伝送中の受信パケットのグラフ}
   \label{fig:lo-packets-graph}
 \end{figure}
 
-図\ref{fig:lo-bytes-graph}で示した、受信バイトのグラフでは平均489MBpsとなっている。
-ソフトウェア実装での実データはYCbCr 4:2:2のピクセルあたり2bytesである。
-
-3840 x 2160 x 2 * 30
-フレームあたり
-
+\newpage
 \begin{figure}[htbp]
   \begin{center}
-    \includegraphics[bb=0 0 597 374,width=12cm]{img/enp2s0f1-bytes-graph.png}
+    \includegraphics[bb=0 0 597 374,width=11.8cm]{img/enp2s0f1-bytes-graph.png}
   \end{center}
   \caption{ハードウェア実装における伝送中の受信バイトのグラフ}
   \label{fig:enp2s0f1-bytes-graph}
@@ -53,24 +99,12 @@ AAA
 
 \begin{figure}[htbp]
   \begin{center}
-    \includegraphics[bb=0 0 597 388,width=12cm]{img/enp2s0f1-packets-graph.png}
+    \includegraphics[bb=0 0 597 388,width=11.8cm]{img/enp2s0f1-packets-graph.png}
   \end{center}
   \caption{ハードウェア実装における伝送中の受信パケットのグラフ}
   \label{fig:enp2s0f1-packets-graph}
 \end{figure}
 
-% HDMIのデータとなるので、4:2:2でもRGBと帯域は変わらない
-3840 * 2160 * 4 * 30=
-
-694800066/5437845
-平均127.77bytesのパケットとなる
-
-190,924,575bytes
-
-885,724,641bytesではないか
-
-1-(14/127.77)=0.890
-1-(56/127.77)=0.561
 
 \newpage
 \section{遅延}
@@ -153,8 +187,8 @@ aaa
 %   \end{tabular}\end{center}
 % \end{table}
 
-\section{実証実験}
-本実装に実用性があることを顕彰するため、ORF2015とORF2016でそれぞれ実証実験を行った。
-付録\ref{chap:orf2015}、付録\ref{chap:orf2016}
+% \section{実証実験}
+% 本実装に実用性があることを顕彰するため、ORF2015とORF2016でそれぞれ実証実験を行った。
+% 付録\ref{chap:orf2015}、付録\ref{chap:orf2016}
 
 \section{考察}
