@@ -16,10 +16,63 @@ AAA
 
 \subsection{計測手法}
 
+ソフトウェア実装の場合はにおける受信PC、ハードウェア実装の場合はIP分配折り返しボードに接続されたデバッグ用のPCで受信バイト数、受信パケット数、破棄パケット数を計測した。
+インターフェースの情報は/proc/net/devを監視し、rrdtoolを使い集計、グラフとして出力した。
+
 \subsection{計測結果}
 
+\begin{figure}[htbp]
+  \begin{center}
+    \includegraphics[bb=0 0 597 374,width=12cm]{img/lo-bytes-graph.png}
+  \end{center}
+  \caption{ソフトウェア実装における伝送中の受信バイトのグラフ}
+  \label{fig:lo-bytes-graph}
+\end{figure}
 
+\begin{figure}[htbp]
+  \begin{center}
+    \includegraphics[bb=0 0 597 388,width=12cm]{img/lo-packets-graph.png}
+  \end{center}
+  \caption{ソフトウェア実装における伝送中の受信パケットのグラフ}
+  \label{fig:lo-packets-graph}
+\end{figure}
 
+図\ref{fig:lo-bytes-graph}で示した、受信バイトのグラフでは平均489MBpsとなっている。
+ソフトウェア実装での実データはYCbCr 4:2:2のピクセルあたり2bytesである。
+
+3840 x 2160 x 2 * 30
+フレームあたり
+
+\begin{figure}[htbp]
+  \begin{center}
+    \includegraphics[bb=0 0 597 374,width=12cm]{img/enp2s0f1-bytes-graph.png}
+  \end{center}
+  \caption{ハードウェア実装における伝送中の受信バイトのグラフ}
+  \label{fig:enp2s0f1-bytes-graph}
+\end{figure}
+
+\begin{figure}[htbp]
+  \begin{center}
+    \includegraphics[bb=0 0 597 388,width=12cm]{img/enp2s0f1-packets-graph.png}
+  \end{center}
+  \caption{ハードウェア実装における伝送中の受信パケットのグラフ}
+  \label{fig:enp2s0f1-packets-graph}
+\end{figure}
+
+% HDMIのデータとなるので、4:2:2でもRGBと帯域は変わらない
+3840 * 2160 * 4 * 30=
+
+694800066/5437845
+平均127.77bytesのパケットとなる
+
+190,924,575bytes
+
+885,724,641bytesではないか
+
+1-(14/127.77)=0.890
+1-(56/127.77)=0.561
+
+\newpage
 \section{遅延}
 
 遅延を計測した
@@ -49,14 +102,6 @@ aaa
 
 \begin{figure}[htbp]
   \begin{center}
-    \includegraphics[bb=0 0 1920 540,width=14cm]{img/evaluate-delay-hardware.png}
-  \end{center}
-  \caption[ハードウェア実装による遅延計測のキャプチャー画像]{ハードウェア実装による遅延計測のキャプチャー画像（左がオリジナルの信号、右が検査対象の信号）}
-  \label{fig:evaluate-delay-hardware}
-\end{figure}
-
-\begin{figure}[htbp]
-  \begin{center}
     \includegraphics[bb=0 0 1920 540,width=14cm]{img/evaluate-delay-software-1.png}
   \end{center}
   \caption[ソフトウェア実装による遅延計測のキャプチャー画像]{ソフトウェア実装による遅延計測のキャプチャー画像（左がオリジナルの信号、右が検査対象の信号）}
@@ -70,6 +115,18 @@ aaa
   \caption[ソフトウェア実装による遅延計測のキャプチャー画像]{ソフトウェア実装による遅延計測のキャプチャー画像（左がオリジナルの信号、右が検査対象の信号）}
   \label{fig:evaluate-delay-software-2}
 \end{figure}
+
+\begin{figure}[htbp]
+  \begin{center}
+    \includegraphics[bb=0 0 1920 540,width=14cm]{img/evaluate-delay-hardware.png}
+  \end{center}
+  \caption[ハードウェア実装による遅延計測のキャプチャー画像]{ハードウェア実装による遅延計測のキャプチャー画像（左がオリジナルの信号、右が検査対象の信号）}
+  \label{fig:evaluate-delay-hardware}
+\end{figure}
+
+\section{YCbCr 4:2:0}
+あああ
+
 
 % \begin{table}[htbp]
 %   \caption{ソフトウェア実装による30FPSにおける遅延時間}
