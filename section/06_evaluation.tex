@@ -1,66 +1,84 @@
 \chapter{評価}
 \label{chap:evaluation}
 
-\section{評価手法}
+\ref{chap:network-transmission}章ての映像制作現場におけるIP伝送装置の要件に基づいて、ソフトウェア、ハードウェアそれぞれIP伝送装置の実装を行った。
+本章ではアプローチが有効な手法であるか、それぞれの項目について評価する。
 
+\section{概要}
 
+\ref{chap:software-experimentation}章、\ref{chap:implementation}章
 
 AAA
 
-\section{計測}
+\section{トラフィック}
 
-BBB
+トラフィックを計測した
 
-図??のように計測を行った
+\subsection{計測手法}
 
-\subsection{トラフィック}
+\subsection{計測結果}
 
-CCC
 
-\subsection{遅延}
+
+\section{遅延}
+
+遅延を計測した
+
+\subsection{計測手法}
+
+映像機器の遅延を計測するため、テスト信号生成、マルチビューワー生成、画面キャプチャーの機能を有する機器を用意した。
+遅延を計測した機器の構成を図\ref{fig:evaluate-diagram}に示す。
+
+テスト信号生成では、フレーム単位のタイムコードが表示された同じソースの映像を2つの信号として出力する。
+一方をスイッチャーへ入力し、もう一方を検査対象となる機器に入力し、その出力をスイッチャーへ入力する。
+これにより、2つの信号の遅延は、検査対象となる機器で発生した遅延に抑えることができる。
+スイッチャーに入力された2つの信号はマルチビューワーとして1つの画面に表示され、その画面をキャプチャーすることにより、ある瞬間の2つの信号を1つの画像で確認することができる。
+このスイッチャーには、フレーム同期の機能があり、1フレームより短い期間でバッファリングされるため、計測できる粒度はフレーム単位となる。
 
 \begin{figure}[htbp]
   \begin{center}
-    \includegraphics[bb=0 0 697 422,width=15.5cm]{img/evaluate-diagram.pdf}
+    \includegraphics[bb=0 0 697 212,width=15cm]{img/evaluate-diagram.pdf}
   \end{center}
   \caption{遅延の計測手法}
   \label{fig:evaluate-diagram}
 \end{figure}
 
-DDD
+\subsection{計測結果}
+
+aaa
 
 \begin{figure}[htbp]
   \begin{center}
     \includegraphics[bb=0 0 1920 540,width=14cm]{img/evaluate-delay.png}
   \end{center}
-  \caption{ダイアグラム}
+  \caption[ハードウェア実装による遅延計測のキャプチャー画像]{ハードウェア実装による遅延計測のキャプチャー画像（左がオリジナルの信号、右が検査対象の信号）}
   \label{fig:evaluate-delay}
 \end{figure}
 
-\begin{table}[htbp]
-  \caption{ソフトウェア実装による30FPSにおける遅延時間}
-  \label{tb:pg235-vin-axi4-stream}
-  \begin{center}
-  \begin{tabular}{l|c|c}
-    \hline
-         & 遅延時間  & 遅延フレーム \\\hline\hline
-    1回目 & 300 ms  & 9 frames \\\hline
-    1回目 & 300 ms  & 9 frames \\\hline
-    1回目 & 300 ms  & 9 frames \\\hline
-    1回目 & 300 ms  & 9 frames \\\hline
-    1回目 & 300 ms  & 9 frames \\\hline
-    1回目 & 300 ms  & 9 frames \\\hline
-    1回目 & 300 ms  & 9 frames \\\hline
-    1回目 & 300 ms  & 9 frames \\\hline
-    1回目 & 300 ms  & 9 frames \\\hline
-    1回目 & 300 ms  & 9 frames \\\hline
-    1回目 & 300 ms  & 9 frames \\\hline
-    1回目 & 300 ms  & 9 frames \\\hline
-    1回目 & 300 ms  & 9 frames \\\hline
-    1回目 & 300 ms  & 9 frames \\\hline\hline
-    平均  & 300 ms  & 9 frames \\\hline
-  \end{tabular}\end{center}
-\end{table}
+% \begin{table}[htbp]
+%   \caption{ソフトウェア実装による30FPSにおける遅延時間}
+%   \label{tb:pg235-vin-axi4-stream}
+%   \begin{center}
+%   \begin{tabular}{l|c|c}
+%     \hline
+%          & 遅延時間  & 遅延フレーム \\\hline\hline
+%     1回目 & 300 ms  & 9 frames \\\hline
+%     1回目 & 300 ms  & 9 frames \\\hline
+%     1回目 & 300 ms  & 9 frames \\\hline
+%     1回目 & 300 ms  & 9 frames \\\hline
+%     1回目 & 300 ms  & 9 frames \\\hline
+%     1回目 & 300 ms  & 9 frames \\\hline
+%     1回目 & 300 ms  & 9 frames \\\hline
+%     1回目 & 300 ms  & 9 frames \\\hline
+%     1回目 & 300 ms  & 9 frames \\\hline
+%     1回目 & 300 ms  & 9 frames \\\hline
+%     1回目 & 300 ms  & 9 frames \\\hline
+%     1回目 & 300 ms  & 9 frames \\\hline
+%     1回目 & 300 ms  & 9 frames \\\hline
+%     1回目 & 300 ms  & 9 frames \\\hline\hline
+%     平均  & 300 ms  & 9 frames \\\hline
+%   \end{tabular}\end{center}
+% \end{table}
 
 \section{実証実験}
 本実装に実用性があることを顕彰するため、ORF2015とORF2016でそれぞれ実証実験を行った。

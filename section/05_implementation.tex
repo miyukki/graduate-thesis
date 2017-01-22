@@ -5,8 +5,8 @@
 
 \section{実装の概要}
 
-IP伝送装置は、Xilinx KC705 評価ボード、HDMIインターフェースカードであるTED HDMI 2.0 FMCカードを使用した。
-本実装の概要を、図\ref{fig:fpga-implement-flow}に示す。
+IP伝送装置は、Xilinx KC705 評価ボード\cite{xilinx-kc705}、HDMIインターフェースカードであるTED HDMI 2.0 FMCカード\cite{ted-hdmi4k}を使用した。
+本実装の構成を図\ref{fig:fpga-implement-flow}に示す。
 
 \begin{figure}[htbp]
   \begin{center}
@@ -24,35 +24,38 @@ IP伝送装置は、Xilinx KC705 評価ボード、HDMIインターフェース�
   \label{fig:ted-4k-fmc-card}
 \end{figure}
 
-今回の実装では評価を行うために、もう1台のXilinx KC705 評価ボード、Quad SFP/SFP+カードを用いて、送信したIPパケットを折り返しする装置を使用した。
-IPパケットを折り返しする装置について、IP伝送装置と直接の関係はない。
+\begin{table}[htbp]
+  \caption{ソフトウェアによる実装を検証したPCの構成}
+  \label{tb:software-specification}
+  \begin{center}
+  \begin{tabular}{c||c}
+    \hline
+    OS  & Ubuntu 14.04 Desktop \\\hline
+    CPU & Intel Core i7-4770 @ 3.40GHz \\\hline
+    RAM & 8GB                  \\\hline
+  \end{tabular}\end{center}
+\end{table}
+
+今回の構成では、IP伝送装置とは別に1台のXilinx KC705 評価ボード、Quad SFP/SFP+カードを用いて、送信したIPパケットを折り返しする装置を使用した。
+IPパケットを折り返しする装置について、IP伝送装置と直接の関係はないため、ここでの解説は割愛する。
 
 \section{FPGAの回路設計}
 
-本実装では、Xilinxの提供するIPである10 Gigabit Ethernet Subsystem\cite{xilinx-pg157}、Video PHY Controller\cite{xilinx-pg230}、HDMI 1.4/2.0 Transmitter Subsystem\cite{xilinx-pg235}、及び、HDMI 1.4/2.0 Receiver Subsystem\cite{xilinx-pg236}を用いた。
-本研究のために、新たに開発をした箇所は、これらのIPに対してデータを受け渡しするモジュールとなる。
+本実装では、Xilinxの提供するIPである10 Gigabit Ethernet Subsystem\cite{xilinx-pg157}、Video PHY Controller\cite{xilinx-pg230}、HDMI 1.4/2.0 Transmitter Subsystem\cite{xilinx-pg235}、及び、HDMI 1.4/2.0 Receiver Subsystem\cite{xilinx-pg236}、FIFO Generator\cite{xilinx-pg057}を用いた。
+本研究のために、新たに実装をした箇所は、これらのIPに対してデータを受け渡しするモジュールとなる。
 
-これらの　ブロック台グラムを示す。
+Xilinxが提供しているKintex-7シリーズ向けのHDMI 2.0のリファレンス実装であるxapp1287\cite{xilinx-xapp1287}をベースとている。
+FPGAの回路全体のブロックダイアグラムを図\label{fig:fpga-whole-diagram}に示す。
+
 \begin{figure}[htbp]
   \begin{center}
     \includegraphics[bb=0 0 452 229,width=15.5cm]{img/fpga-whole-diagram.pdf}
   \end{center}
-  \caption{ダイアグラム}
+  \caption{FPGA回路全体のブロックダイアグラム}
   \label{fig:fpga-whole-diagram}
 \end{figure}
 
-10 Gigabit Ethernet Subsystemの基準クロックは64bit幅の設定で156.25MHzとなり、Video Processing Subsystemの基準クロックは300MHzとなる。
-互いの基準クロックが異なるため、データをそのまま受け渡しすることはできない。
-この問題を解決するため、読み書きで独立したクロックに対応したFIFOを使用する。
-
-\begin{figure}[htbp]
-  \begin{center}
-    \includegraphics[bb=0 0 201 371,width=4cm]{img/fpga-independent-clocking-fifo.pdf}
-  \end{center}
-  \caption{Independent Clocking FIFO}
-  \label{fig:fpga-independent-clocking-fifo}
-\end{figure}
-
+\newpage
 受信側と送信側で、10 Gigabit Ethernet SubsystemとVideo Processing Subsystem間の受け渡しを行うため、次の4つのモジュールを実装した。
 
 \begin{table}[htbp]
@@ -69,7 +72,27 @@ IPパケットを折り返しする装置について、IP伝送装置と直接�
   \end{tabular}\end{center}
 \end{table}
 
-送信側のモジュールの接続フローを図\ref{fig:fpga-video-ethernet-diagram}に示す。
+10 Gigabit Ethernet Subsystemの基準クロックは64bit幅の設定で156.25MHzとなり、Video Processing Subsystemの基準クロックは300MHzとなる。
+互いの基準クロックが異なるため、データをそのまま受け渡しすることはできない。
+
+この問題を解決するため、読み書きで独立したクロックに対応したIndependent Clocking FIFOをFIFO Generatorで作成する。
+今回のIP伝送装置の送信側で用いた、FIFOのモジュールを図\ref{fig:fpga-independent-clocking-fifo}に示す。
+
+\begin{figure}[htbp]
+  \begin{center}
+    \includegraphics[bb=0 0 201 371,width=4cm]{img/fpga-independent-clocking-fifo.pdf}
+  \end{center}
+  \caption{Independent Clocking FIFO}
+  \label{fig:fpga-independent-clocking-fifo}
+\end{figure}
+
+\newpage
+読み書きで独立したクロックの他に、入出力のデータ幅が異なっており、入力のデータ幅は35bit、出力のデータ幅は倍の70bitとなっている。
+Video Processing Subsystemは300MHzで35bitのデータを書き込み、10 Gigabit Ethernet Subsystemは156.25MHzのデータを読み込むため、
+Ethernet Subsystemのほうがクロックが早いため、FIFOがフル状態になることはない。
+また、almost\_emptyフラグを使用しており、emptyになる1クロック前に知ることが可能である。
+
+送信側のモジュールの接続を図\ref{fig:fpga-video-ethernet-diagram}に示す。
 
 \begin{figure}[htbp]
   \begin{center}
@@ -77,6 +100,16 @@ IPパケットを折り返しする装置について、IP伝送装置と直接�
   \end{center}
   \caption{Video Stream to Ethernet Packet Subsystem Diagram}
   \label{fig:fpga-video-ethernet-diagram}
+\end{figure}
+
+受信側のモジュールの接続を図\ref{fig:fpga-ethernet-video-diagram}に示す。
+
+\begin{figure}[htbp]
+  \begin{center}
+    \includegraphics[bb=0 0 911 166,width=15.5cm]{img/fpga-ethernet-video-diagram.pdf}
+  \end{center}
+  \caption{Ethernet Packet to Video Stream Subsystem Diagram}
+  \label{fig:fpga-ethernet-video-diagram}
 \end{figure}
 
 Video Processing Subsystemが出力するAxi4-Streamのtdataが映像データを表し、有効データ幅は32bitである。
@@ -100,16 +133,6 @@ FIFOに映像データだけを書き込んだ場合、ラインの終了、フ�
 \end{table}
 
 % どちらもAxi4-Stream規格での通信となるが、
-
-受信側のモジュールの接続フローを図\ref{fig:fpga-ethernet-video-diagram}に示す。
-
-\begin{figure}[htbp]
-  \begin{center}
-    \includegraphics[bb=0 0 911 166,width=15.5cm]{img/fpga-ethernet-video-diagram.pdf}
-  \end{center}
-  \caption{Ethernet Packet to Video Stream Subsystem Diagram}
-  \label{fig:fpga-ethernet-video-diagram}
-\end{figure}
 
 % 表\ref{tb:pg236-vout-axi4-stream}
 % 表\ref{tb:pg235-vin-axi4-stream}
@@ -201,7 +224,7 @@ UDPのペイロードのビデオデータより前の区間が6byteなのは、
 \begin{figure}[htbp]
   \begin{center}
     % \fbox{
-    \includegraphics[bb=0 0 1062 501,width=22.5cm,angle=90]{img/fpga-waveform.pdf}
+    \includegraphics[bb=0 0 1062 501,width=22.5cm,angle=270]{img/fpga-waveform.pdf}
     % }
   \end{center}
   \caption{ILAによるIP伝送時のHDMI入出力のデータのダンプ}
