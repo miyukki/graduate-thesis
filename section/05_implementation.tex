@@ -43,14 +43,14 @@ IPパケットを折り返しする装置について、IP伝送装置と直接�
 
 本実装は、Xilinxが提供しているKintex-7シリーズ向けのHDMI 2.0のリファレンス実装であるxapp1287\cite{xilinx-xapp1287}をベースとている。
 Xilinxの提供するIPである10 Gigabit Ethernet Subsystem\cite{xilinx-pg157}、Video PHY Controller\cite{xilinx-pg230}、HDMI 1.4/2.0 Transmitter Subsystem\cite{xilinx-pg235}、及び、HDMI 1.4/2.0 Receiver Subsystem\cite{xilinx-pg236}、FIFO Generator\cite{xilinx-pg057}が使用されている。
-本研究のために、新たに実装をした箇所は、これらのIPに対してデータを受け渡しするモジュールとなる。
-FPGAの回路全体のブロックダイアグラムを図~\ref{fig:fpga-whole-diagram}に示す。
+本研究のために新たに実装をした箇所は、これらのIPに対してデータを受け渡しするモジュールとそのモジュールを含んだEthlogic Subsystemである。
+FPGAの回路全体のブロックダイアグラムを図~\ref{fig:fpga-whole-diagram}に示す。なお、IP伝送装置に関係するモジュールのみを掲載している。
 
 \begin{figure}[htbp]
   \begin{center}
-    \includegraphics[bb=0 0 452 229,width=15.5cm]{img/fpga-whole-diagram.pdf}
+    \includegraphics[bb=0 0 738 423,width=15.5cm]{img/fpga-whole-diagram.pdf}
   \end{center}
-  \caption{FPGA回路全体のブロックダイアグラム（図は後ほど書く）}
+  \caption{FPGA回路全体のブロックダイアグラム}
   \label{fig:fpga-whole-diagram}
 \end{figure}
 
