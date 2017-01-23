@@ -105,8 +105,15 @@ $B_{video}$は、理想的な1秒あたりの映像データのバイト数と�
   \label{fig:enp2s0f1-packets-graph}
 \end{figure}
 
-
 \newpage
+
+\subsection{考察}
+
+ソフトウェア実装では、平均1万パケットであるのに対し、ハードウェア実装では700万パケットもあることが、トラフィックの計測でわかった。
+これは、\ref{chap:implementation}章で述べたハードウェア実装でFIFOのデータが空でなければパケットを生成し、送信するためである。
+有効データ率も0.5617と非常に少なく、非効率である。
+パケットの生成において、バッファ区間を増やす、一定の映像データが溜まったらパケットを生成するなど、より効率化しなければならない事がわかった。
+
 \section{遅延}
 
 本節では、実装したIP伝送装置で映像制作現場において許容できる遅延の範囲内かを顕彰するために、遅延を計測する環境を用意し、発生する遅延を計測した。
@@ -135,30 +142,7 @@ $B_{video}$は、理想的な1秒あたりの映像データのバイト数と�
 
 \subsection{計測結果}
 
-\begin{figure}[htbp]
-  \begin{center}
-    \includegraphics[bb=0 0 1920 540,width=14cm]{img/evaluate-delay-software-1.png}
-  \end{center}
-  \caption[ソフトウェア実装による1回目の遅延計測のキャプチャー画像]{\shortstack{左がオリジナルの信号、右が検査対象の信号\\ソフトウェア実装による1回目の遅延計測のキャプチャー画像}}
-  \label{fig:evaluate-delay-software-1}
-\end{figure}
-
-\begin{figure}[htbp]
-  \begin{center}
-    \includegraphics[bb=0 0 1920 540,width=14cm]{img/evaluate-delay-software-2.png}
-  \end{center}
-  \caption[ソフトウェア実装による4回目の遅延計測のキャプチャー画像]{\shortstack{左がオリジナルの信号、右が検査対象の信号\\ソフトウェア実装による4回目の遅延計測のキャプチャー画像}}
-  \label{fig:evaluate-delay-software-2}
-\end{figure}
-
-\begin{figure}[htbp]
-  \begin{center}
-    \includegraphics[bb=0 0 1920 540,width=14cm]{img/evaluate-delay-hardware.png}
-  \end{center}
-  \caption[ハードウェア実装による遅延計測のキャプチャー画像]{\shortstack{左がオリジナルの信号、右が検査対象の信号\\ハードウェア実装による遅延計測のキャプチャー画像}}
-  \label{fig:evaluate-delay-hardware}
-\end{figure}
-
+% \newpage
 % \section{YCbCr 4:2:0}
 % あああ
 
@@ -192,7 +176,31 @@ $B_{video}$は、理想的な1秒あたりの映像データのバイト数と�
 % 本実装に実用性があることを顕彰するため、ORF2015とORF2016でそれぞれ実証実験を行った。
 % 付録\ref{chap:orf2015}、付録\ref{chap:orf2016}
 
-\section{考察}
+\section{まとめ}
 
 ハードウェアによる実装では、YCbCr 4:2:0方式が使えるに加え、遅延も1フレーム以内であり、映像制作現場において優位に扱えることがわかった。
 一方、ソフトウェアによる実装では、遅延が平均で6フレームとなり、映像制作現場における要件である133.33ms以内に抑えることができなかった。
+
+\begin{figure}[htbp]
+  \begin{center}
+    \includegraphics[bb=0 0 1920 540,width=14cm]{img/evaluate-delay-software-1.png}
+  \end{center}
+  \caption[ソフトウェア実装による1回目の遅延計測のキャプチャー画像]{\shortstack{左がオリジナルの信号、右が検査対象の信号\\ソフトウェア実装による1回目の遅延計測のキャプチャー画像}}
+  \label{fig:evaluate-delay-software-1}
+\end{figure}
+
+\begin{figure}[htbp]
+  \begin{center}
+    \includegraphics[bb=0 0 1920 540,width=14cm]{img/evaluate-delay-software-2.png}
+  \end{center}
+  \caption[ソフトウェア実装による4回目の遅延計測のキャプチャー画像]{\shortstack{左がオリジナルの信号、右が検査対象の信号\\ソフトウェア実装による4回目の遅延計測のキャプチャー画像}}
+  \label{fig:evaluate-delay-software-2}
+\end{figure}
+
+\begin{figure}[htbp]
+  \begin{center}
+    \includegraphics[bb=0 0 1920 540,width=14cm]{img/evaluate-delay-hardware.png}
+  \end{center}
+  \caption[ハードウェア実装による遅延計測のキャプチャー画像]{\shortstack{左がオリジナルの信号、右が検査対象の信号\\ハードウェア実装による遅延計測のキャプチャー画像}}
+  \label{fig:evaluate-delay-hardware}
+\end{figure}

@@ -11,14 +11,28 @@
 4K映像の帯域は2K映像と比較すると約4倍、現行のハイビジョン放送と比較すると約8倍にもなり、伝送方法とそのコストが課題である。
 そのため、映像制作現場では、映像機器と比べて比較的安価なネットワークリソースを活用して伝送する、Video over IP化が進んでいる。
 
-本研究では、実装を行うために必要となる、映像制作現場におけるIP伝送装置の要件を調査した。調査では映像の遅延が133.33msまでであれば「遅延を許容できる」と回答した人が9割であった。
-汎用的なビデオインターフェースであるHDMIから、映像をIPパケット化し、非圧縮の4K映像を伝送するシステムを設計、実装する。
+本研究では、まず映像制作現場の構成を調べ、IP伝送装置の要件を調査した。
+要件の1つである遅延の許容値を調査するため、映像用のスイッチャーをブラウザ上で再現し、遅延を加えて描画する実験環境を構築した。
+これを用いて、映像遅延の体感実験を行ったところ、133.33msの映像遅延まで「遅延を許容できる」と回答した被験者が全体の9割であった。
+したがって、IP伝送装置の要件として映像遅延は133.33ms以内が望ましいことがわかった。
 
-本研究では、4K映像キャプチャーボード、10Gbpsネットワークインターフェースカードを備えた汎用的なコンピューターで実装したソフトウェアと、Xilinxの7-Series FPGAボードで実装したハードウェアの両方を実装した。
+本研究では、この要件を満たすIP伝送装置としてソフトウェアとハードウェアによる伝送装置の設計、実装を行った。
+ソフトウェア実装では、4K映像キャプチャーボードと10Gbpsのネットワークカードを有する汎用マシン上でIP伝送を行うソフトウェアを実装した。
+また、ハードウェア実装では、Xilinxの7-Series FPGAボードを用いてIP伝送装置を実装した。
 
-評価として、実装したソフトウェア、実装したハードウェアのそれぞれにおいてトラフィック、遅延を計測した。
-ソフトウェアではおよそ199.99msの遅延があるが、ハードウェアでは33ms以内の遅延となった。
-結果として、映像制作現場における要件を満たすことがでソフトウェア実装では困難であり、FPGAによるハードウェア実装が優位であることがわかった。
+実装したソフトウェアとハードウェアについて、理想的なトラフィックを送信しているか、133.33ms以内の遅延を達成しているかを計測した。
+トラフィックを計測した結果、ハードウェア実装では理想的なデータを送信していたが、ソフトウェア実装では処理の問題により理想的なデータを送信できていなかった。
+また、遅延を計測した結果、ソフトウェアとハードウェアではそれぞれ199.99ms、33ms以内の遅延があることがわかった。
+この結果から、映像制作現場において、ソフトウェア実装では遅延を体感させるが、ハードウェア実装では遅延を感じさせずに、映像制作現場で十分に活用できることがわかった。
+
+% 本研究では、実装を行うために必要となる、映像制作現場におけるIP伝送装置の要件を調査した。調査では映像の遅延が133.33msまでであれば「遅延を許容できる」と回答した人が9割であった。
+% 汎用的なビデオインターフェースであるHDMIから、映像をIPパケット化し、非圧縮の4K映像を伝送するシステムを設計、実装する。
+
+% 本研究では、4K映像キャプチャーボード、10Gbpsネットワークインターフェースカードを備えた汎用的なコンピューターで実装したソフトウェアと、Xilinxの7-Series FPGAボードで実装したハードウェアの両方を実装した。
+
+% 評価として、実装したソフトウェア、実装したハードウェアのそれぞれにおいてトラフィック、遅延を計測した。
+% ソフトウェアではおよそ199.99msの遅延があるが、ハードウェアでは33ms以内の遅延となった。
+% 結果として、映像制作現場における要件を満たすことがでソフトウェア実装では困難であり、FPGAによるハードウェア実装が優位であることがわかった。
 
 \end{jabstract}
 
@@ -30,14 +44,18 @@ In recent years, the spread of 4K / 8K images is accelerating all over the world
 The bandwidth of 4K video is about 4 times as compared with 2K video, and it is about 8 times as compared with the current high vision broadcasting, and the transmission method and its cost are the issues.
 For this reason, in the video industry, Video over IP is advancing, utilizing relatively inexpensive network resources compared to video equipment, to transmit.
 
-In this research, we investigated the performance requirements of the IP transmission equipment at the video production site, which is necessary for implementation. In the survey, 90% of people responded that "Delay can be tolerated" if the delay of video is up to 133.33 ms.
-We design and implement a system for propagating video packets to IP packets, uncompressed 4K video from HDMI which is a versatile video mixer.
+In this research, we first examined the composition of video production site and investigated the requirements of IP transmission equipment.
+In order to investigate the tolerance of delay which is one of the requirements, we constructed an experimental environment in which a switcher for video is reproduced on the browser, and drawing is performed with delay added.
+Using this, we conducted a physical exercise experiment of video delay. As a result, 90% of the subjects responded that "delay can be tolerated" until the video delay of 133.33 ms.
+Therefore, we found that the video delay is desirable to be within 133.33 ms as a requirement of the IP transmission device.
 
-In this research, we implemented both software implemented with a general-purpose computer equipped with 4K video capture board and 10 Gbps network interface card and hardware implemented with Xilinx 7 series FPGA board.
+In this research, we designed and implemented a transmission device by software and hardware as an IP transmission device satisfying this requirement.
+In software implementation, we implemented software that performs IP transmission on a general purpose machine with 4K video capture board and 10 Gbps network card.
+In the hardware implementation, an IP transmission device was implemented using Xilinx's 7-Series FPGA board.
 
-As evaluation, track fix and delay were measured for each of the implemented software and the installed hardware.
-In software it has a delay of 199.99 ms, but with hardware the delay is within 33 ms.
-
-As a result, hardware implementation by FPGA is dominant at video production site, but it turned out that it is easy to utilize by software implementation.
+We measured whether the ideal traffic is being transmitted or delayed within 133.33 ms for the implemented software and hardware.
+As a result of measuring traffic, ideal data was transmitted by hardware implementation, but software implementation was not able to transmit ideal data due to processing problems.
+Also, as a result of delay measurement, it was found that software and hardware had delays of within 199.99 ms and 33 ms respectively.
+From the results, it was found that at the video production site, software implementation experienced delays, but hardware implementations will not be delayed and can be fully utilized at the video production site.
 
 \end{eabstract}
