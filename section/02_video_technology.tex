@@ -65,13 +65,13 @@
   \label{fig:yuv-pixel-structure}
 \end{figure}
 
-% YUVのピクセルあたりの色情報の構造を、図\ref{fig:yuv-pixel-structure}に示す。
+% YUVのピクセルあたりの色情報の構造を、図~\ref{fig:yuv-pixel-structure}に示す。
 
 YUV 4:4:4では、輝度信号、色差信号共に1ピクセル毎である。
 YUV 4:2:2では、輝度信号は1ピクセル毎、色差信号は2ピクセル毎であり、同じ色深度のYUV 4:4:4と比べ、帯域はおよそ2/3となる。
 YUV 4:2:0では、輝度信号は1ピクセル毎、色差信号は4ピクセル毎であり、同じ色深度のYUV 4:2:2と比べ、帯域はおよそ3/4となり、同じ色深度のYUV 4:4:4と比べ、帯域はおよそ1/2となる。
 
-なお、図\ref{fig:yuv-pixel-structure}で示した、UV成分であるCb、Crの色のサンプリング方法は、伝送方式の規格によって定められている。
+なお、図~\ref{fig:yuv-pixel-structure}で示した、UV成分であるCb、Crの色のサンプリング方法は、伝送方式の規格によって定められている。
 
 \section{インターフェース}
 \label{sec:interface}
@@ -134,7 +134,7 @@ HDMI 2.0\cite{hdmi-spec-2-0}では、4K解像度向けにYCbCr 4:2:0の色空間
 YCbCr 4:2:0によるピクセルエンコーディングの規格では、YCbCr 4:2:2と比べ、1/2のデータレートで転送することが可能となった。
 これにより、一部の機器では4K解像度への対応をソフトウェアだけで行なうことが可能である。
 
-YCbCr 4:4:4、YCbCr 4:2:2のTMDSデータのマッピングを、図\ref{fig:hdmi-spec-yuv-444}と図\ref{fig:hdmi-spec-yuv-422}に示す。
+YCbCr 4:4:4、YCbCr 4:2:2のTMDSデータのマッピングを、図~\ref{fig:hdmi-spec-yuv-444}と図~\ref{fig:hdmi-spec-yuv-422}に示す。
 
 \begin{figure}[htbp]
   \begin{center}
@@ -156,7 +156,7 @@ YCbCr 4:4:4、YCbCr 4:2:2のTMDSデータのマッピングを、図\ref{fig:hdm
 そのため、HDMIでは色空間のYCbCr 4:4:4、YCbCr 4:2:2のどちらであっても帯域には影響しない。
 
 \newpage
-YCbCr 4:2:0のTMDSデータのマッピングを、図\ref{fig:hdmi-spec-yuv-420}に示す。
+YCbCr 4:2:0のTMDSデータのマッピングを、図~\ref{fig:hdmi-spec-yuv-420}に示す。
 
 \begin{figure}[htbp]
   \begin{center}
@@ -182,7 +182,7 @@ BNC端子を使用することが一般的であり、抜け落ち防止のた�
 \label{sec:bandwidth}
 帯域は解像度の他にも、インターレース、色空間、色深度により変化する。
 また、伝送するインターフェースの規格によっても、物理層での扱いにより若干の違いがある。
-ここでは、HDMIで色深度を8bitとした場合の解像度、フレームレート、色空間別に見たピクセルクロック、データレートを表\ref{tb:video-bandwidth}に示す。
+ここでは、HDMIで色深度を8bitとした場合の解像度、フレームレート、色空間別に見たピクセルクロック、データレートを表~\ref{tb:video-bandwidth}に示す。
 
 % 1920x1080p/60 2200x1125 148.5 SMPTE 274M
 % 1Channel = 2200 * 1125 * 3 * 8 * 60 * 1.25/3
@@ -219,7 +219,7 @@ IP伝送規格は、SDIなどの標準化を行っているSMPTEや、映像制�
 この節では、抜粋して幾つかのIP伝送規格について解説する。
 
 \subsection{SMPTE 2022}
-SMPTE 2022は、SMPTEが提唱、標準化したIP伝送規格であり、表\ref{tb:smpte2022-abstract}に示す7つの規格に分かれている。
+SMPTE 2022は、SMPTEが提唱、標準化したIP伝送規格であり、表~\ref{tb:smpte2022-abstract}に示す7つの規格に分かれている。
 
 \begin{table}[htbp]
   \caption{SMPTE 2022の7つの規格の概要}

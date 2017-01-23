@@ -6,7 +6,7 @@
 \section{実装の概要}
 
 IP伝送装置は、Xilinx KC705 評価ボード\cite{xilinx-kc705}、HDMIインターフェースカードであるTED HDMI 2.0 FMCカード\cite{ted-hdmi4k}を使用した。
-本実装の構成を図\ref{fig:fpga-implement-flow}に示す。
+本実装の構成を図~\ref{fig:fpga-implement-flow}に示す。
 
 \begin{figure}[htbp]
   \begin{center}
@@ -44,7 +44,7 @@ IPパケットを折り返しする装置について、IP伝送装置と直接�
 本実装は、Xilinxが提供しているKintex-7シリーズ向けのHDMI 2.0のリファレンス実装であるxapp1287\cite{xilinx-xapp1287}をベースとている。
 Xilinxの提供するIPである10 Gigabit Ethernet Subsystem\cite{xilinx-pg157}、Video PHY Controller\cite{xilinx-pg230}、HDMI 1.4/2.0 Transmitter Subsystem\cite{xilinx-pg235}、及び、HDMI 1.4/2.0 Receiver Subsystem\cite{xilinx-pg236}、FIFO Generator\cite{xilinx-pg057}が使用されている。
 本研究のために、新たに実装をした箇所は、これらのIPに対してデータを受け渡しするモジュールとなる。
-FPGAの回路全体のブロックダイアグラムを図\ref{fig:fpga-whole-diagram}に示す。
+FPGAの回路全体のブロックダイアグラムを図~\ref{fig:fpga-whole-diagram}に示す。
 
 \begin{figure}[htbp]
   \begin{center}
@@ -54,7 +54,7 @@ FPGAの回路全体のブロックダイアグラムを図\ref{fig:fpga-whole-di
   \label{fig:fpga-whole-diagram}
 \end{figure}
 
-受信側と送信側で、10 Gigabit Ethernet SubsystemとVideo Processing Subsystem間の受け渡しを行うため、表\ref{tb:fpga-implement-modules}に示す4つのモジュールを実装した。
+受信側と送信側で、10 Gigabit Ethernet SubsystemとVideo Processing Subsystem間の受け渡しを行うため、表~\ref{tb:fpga-implement-modules}に示す4つのモジュールを実装した。
 
 \begin{table}[htbp]
   \caption{10 Gigabit Ethernet Subsystem、及び、Video Processing Subsystemの接続のために実装したモジュール}
@@ -74,7 +74,7 @@ FPGAの回路全体のブロックダイアグラムを図\ref{fig:fpga-whole-di
 互いの基準クロックが異なるため、データをそのまま受け渡しすることはできない。
 
 この問題を解決するため、読み書きで独立したクロックに対応したIndependent Clocking FIFOをFIFO Generatorで作成する。
-今回のIP伝送装置の送信側で用いた、FIFOのモジュールを図\ref{fig:fpga-independent-clocking-fifo}に示す。
+今回のIP伝送装置の送信側で用いた、FIFOのモジュールを図~\ref{fig:fpga-independent-clocking-fifo}に示す。
 
 \begin{figure}[htbp]
   \begin{center}
@@ -90,7 +90,7 @@ Video Processing Subsystemは300MHzで35bitのデータを書き込み、10 Giga
 10 Gigabit Ethernet Subsystemのクロックが早いため、FIFOがフル状態になることはない。
 また、almost\_emptyフラグを使用しており、emptyになる1クロック前に知ることが可能である。
 
-送信側のモジュールの接続を図\ref{fig:fpga-video-ethernet-diagram}に示す。
+送信側のモジュールの接続を図~\ref{fig:fpga-video-ethernet-diagram}に示す。
 
 \begin{figure}[htbp]
   \begin{center}
@@ -100,7 +100,7 @@ Video Processing Subsystemは300MHzで35bitのデータを書き込み、10 Giga
   \label{fig:fpga-video-ethernet-diagram}
 \end{figure}
 
-受信側のモジュールの接続を図\ref{fig:fpga-ethernet-video-diagram}に示す。
+受信側のモジュールの接続を図~\ref{fig:fpga-ethernet-video-diagram}に示す。
 
 \begin{figure}[htbp]
   \begin{center}
@@ -111,7 +111,7 @@ Video Processing Subsystemは300MHzで35bitのデータを書き込み、10 Giga
 \end{figure}
 
 Video Processing Subsystemが出力するAxi4-Streamのtdataは映像データを表し、有効データ幅は32bitである。
-また、表\ref{tb:fpga-axi4-stream}に示すとおり、tlastがラインの終了、tuserがフレームの開始を表す。
+また、表~\ref{tb:fpga-axi4-stream}に示すとおり、tlastがラインの終了、tuserがフレームの開始を表す。
 FIFOに映像データだけを書き込んだ場合、ラインの終了、フレームの開始のタイミングが失われることとなる。
 この問題を解決するため、FIFOにはAxi4-Streamのtdataの他に、tlast、tuser、tvalidも書き込む。
 
@@ -132,12 +132,12 @@ FIFOに映像データだけを書き込んだ場合、ラインの終了、フ�
 
 % どちらもAxi4-Stream規格での通信となるが、
 
-% 表\ref{tb:pg236-vout-axi4-stream}
-% 表\ref{tb:pg235-vin-axi4-stream}
+% 表~\ref{tb:pg236-vout-axi4-stream}
+% 表~\ref{tb:pg235-vin-axi4-stream}
 
 % Axi4-Stream、tuser
-% 図\ref{fig:fpga-video-ethernet-diagram}
-% 図\ref{fig:fpga-ethernet-video-diagram}
+% 図~\ref{fig:fpga-video-ethernet-diagram}
+% 図~\ref{fig:fpga-ethernet-video-diagram}
 
 % Xilinxの 10 Gigabit Ethernet Subsystem、及び、Video Processing Subsystem
 % これを解決するため、Xilinxの 10 Gigabit Ethernet Subsystem、及び、Video Processing Subsystem
@@ -180,7 +180,7 @@ FIFOに映像データだけを書き込んだ場合、ラインの終了、フ�
 %   \end{tabular}\end{center}
 % \end{table}
 
-図\ref{fig:fpga-video-packet}に、本実装で用いたUDPデータの構造を示す。
+図~\ref{fig:fpga-video-packet}に、本実装で用いたUDPデータの構造を示す。
 
 \begin{figure}[htbp]
   \begin{center}
@@ -194,7 +194,7 @@ UDPデータの映像データより前のヘッダー区間は6byteとなって
 これは、FPGA内部でEthernetパケットを構築していく際に、データの先頭6byteが丁度64bitの区切り目となるためであり、FPGAで処理する祭に効率が良い。
 UDPのパケットはFIFOにデータがある間生成され続けるため、IPパケット上の長さは00としている。映像データによってはジャンボフレームとなる場合もある。
 
-各モジュールで映像データがどのように扱われるかを波形イメージとして、図\ref{fig:fpga-first-pixel-waveform}に示す。
+各モジュールで映像データがどのように扱われるかを波形イメージとして、図~\ref{fig:fpga-first-pixel-waveform}に示す。
 
 HDMI 1.4/2.0 Receiver Subsystemから出力されるデータは、v\_axi4s\_vid2fifo.vによって、1クロック遅れてFIFOに書き込まれる。
 FIFOはある程度のバッファリングが行われるため、一定クロック経過後にemptyが立ち下がり、データが読み取れる状態となる。
@@ -212,8 +212,8 @@ v\_axi4s\_fifo2eth.vによって、emptyの立ち下がりの1クロック遅れ
   \label{fig:fpga-first-pixel-waveform}
 \end{figure}
 
-% 図\ref{fig:fpga-ila-fifo-to-eth}、
-図\ref{fig:fpga-ila-hdmi}では、本実装を稼働させたときのILA（Integrated Logic Analyzer）とよばれる、FPGAの内部信号をモニターするためのツールを使った際に、HDMIの入力と出力を検証した様子である。
+% 図~\ref{fig:fpga-ila-fifo-to-eth}、
+図~\ref{fig:fpga-ila-hdmi}では、本実装を稼働させたときのILA（Integrated Logic Analyzer）とよばれる、FPGAの内部信号をモニターするためのツールを使った際に、HDMIの入力と出力を検証した様子である。
 前述の通り、almost\_emptyの立ち下がりを合図に、パケットを生成してから映像データを書き込むまでに一定のクロックが経過するため、FIFOへの書き込みがバッファリングされる。
 hdmi\_rx\_tvalidが頻繁に立ち上がりと立ち下がりを繰り返しているのに対し、hdmi\_tx\_tvalidはある程度まとまった周期で立ち上がりをしている様子が確認できる。
 
@@ -237,7 +237,7 @@ hdmi\_rx\_tvalidが頻繁に立ち上がりと立ち下がりを繰り返して�
 %     \begin{center}
 %         \includegraphics[bb=0 0 1197 246,width=15.5cm]{img/fpga-ila-hdmi-x2.png}
 %     \end{center}
-%     \caption{図\ref{fig:fpga-ila-hdmi}を拡大した}
+%     \caption{図~\ref{fig:fpga-ila-hdmi}を拡大した}
 %     \label{fig:fpga-ila-hdmi-x2}
 % \end{figure}
 
