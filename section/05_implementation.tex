@@ -1,7 +1,7 @@
 \chapter{システムの設計・実装}
 \label{chap:implementation}
 
-本章では、\ref{chap:network-transmission}章で述べた、映像制作現場におけるIP伝送装置について評価するため、4K映像を非圧縮でIPで伝送するシステムであるNG-HDMI-TSをハードウェアで実装したことについて実装の解説をする。
+本章では、\ref{chap:video-production}章で述べた、映像制作現場におけるIP伝送装置について評価するため、4K映像を非圧縮でIPで伝送するシステムであるNG-HDMI-TSをハードウェアで実装したことについて実装の解説をする。
 
 \section{実装の概要}
 
@@ -245,7 +245,7 @@ hdmi\_rx\_tvalidが頻繁に立ち上がりと立ち下がりを繰り返して�
 % \end{figure}
 
 \begin{table}[htbp]
-  \caption{論理合成後のリソース}
+  \caption{論理合成後のリソース使用状況}
   \label{tb:fpga-post-implementation-utilization}
   \begin{center}
   \begin{tabular}{l|r|r|r}

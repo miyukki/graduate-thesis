@@ -1,13 +1,13 @@
 \chapter{評価}
 \label{chap:evaluation}
 
-\ref{chap:network-transmission}章ての映像制作現場におけるIP伝送装置の要件に基づいて、ソフトウェア、ハードウェアそれぞれIP伝送装置の実装を行った。
+\ref{chap:video-production}章ての映像制作現場におけるIP伝送装置の要件に基づいて、ソフトウェア、ハードウェアそれぞれIP伝送装置の実装を行った。
 本章ではアプローチが有効な手法であるか、それぞれの項目について評価する。
 
 \section{概要}
 
 \ref{chap:software-experimentation}章と\ref{chap:implementation}章で実装したIP伝送装置を動作させる。
-\ref{chap:network-transmission}章で性能要件としてあげた、トラフィックと遅延の2つの項目において計測手法をまとめ、計測結果とともに考察をまとめる。
+\ref{chap:video-production}章で性能要件としてあげた、トラフィックと遅延の2つの項目において計測手法をまとめ、計測結果とともに考察をまとめる。
 
 \section{トラフィック}
 
@@ -181,7 +181,7 @@
 また、計測結果を表~\ref{tb:evaluate-software-delay}に示す。
 ハードウェアよりも遅延が多く、計測回数によってばらつきがあることが分かる。
 遅延フレームの平均は6フレームとなり、30FPSでは199.99msとなる。
-これは、\ref{chap:network-transmission}章で述べた、性能要件となる133.33msの遅延よりも多く、ソフトウェアによる実装では、映像制作現場に適さないことが分かる。
+これは、\ref{chap:video-production}章で述べた、性能要件となる133.33msの遅延よりも多く、ソフトウェアによる実装では、映像制作現場に適さないことが分かる。
 
 \begin{table}[htbp]
   \caption{ソフトウェア実装による30FPSにおける遅延時間の計測結果}
