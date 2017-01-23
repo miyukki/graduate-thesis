@@ -84,7 +84,6 @@ FPGAの回路全体のブロックダイアグラムを図~\ref{fig:fpga-whole-d
   \label{fig:fpga-independent-clocking-fifo}
 \end{figure}
 
-\newpage
 読み書きで独立したクロックの他に、入出力のデータ幅が異なっており、入力のデータ幅は35bit、出力のデータ幅は倍の70bitとなっている。理由は後述する。
 Video Processing Subsystemは300MHzで35bitのデータを書き込み、10 Gigabit Ethernet Subsystemは156.25MHzのデータを読み込む。
 10 Gigabit Ethernet Subsystemのクロックが早いため、FIFOがフル状態になることはない。

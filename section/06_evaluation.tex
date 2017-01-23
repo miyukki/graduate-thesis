@@ -144,7 +144,7 @@
 \end{figure}
 
 キャプチャーした瞬間によっては、IP伝送装置のタイミングにより遅延のバラ付きが出る可能性があるため、5回計測を行う。
-テスト信号は4K 29.97Pである。
+テスト信号はYCbCr 4:2:2の4K 30Pである。
 
 \subsection{計測結果}
 
@@ -152,7 +152,7 @@
   \begin{center}
     \includegraphics[bb=0 0 1920 540,width=14cm]{img/evaluate-delay-software-1.png}
   \end{center}
-  \caption[ソフトウェア実装による遅延計測のキャプチャー画像]{ソフトウェア実装による遅延計測のキャプチャー画像 左がオリジナルの信号、右が検査対象の信号}
+  \caption[ソフトウェア実装による1回目の遅延計測のキャプチャー画像]{\shortstack{左がオリジナルの信号、右が検査対象の信号\\ソフトウェア実装による1回目の遅延計測のキャプチャー画像}}
   \label{fig:evaluate-delay-software-1}
 \end{figure}
 
@@ -160,7 +160,7 @@
   \begin{center}
     \includegraphics[bb=0 0 1920 540,width=14cm]{img/evaluate-delay-software-2.png}
   \end{center}
-  \caption[ソフトウェア実装による遅延計測のキャプチャー画像]{ソフトウェア実装による遅延計測のキャプチャー画像 左がオリジナルの信号、右が検査対象の信号}
+  \caption[ソフトウェア実装による4回目の遅延計測のキャプチャー画像]{\shortstack{左がオリジナルの信号、右が検査対象の信号\\ソフトウェア実装による4回目の遅延計測のキャプチャー画像}}
   \label{fig:evaluate-delay-software-2}
 \end{figure}
 
@@ -168,14 +168,15 @@
   \begin{center}
     \includegraphics[bb=0 0 1920 540,width=14cm]{img/evaluate-delay-hardware.png}
   \end{center}
-  \caption[ハードウェア実装による遅延計測のキャプチャー画像]{ハードウェア実装による遅延計測のキャプチャー画像 左がオリジナルの信号、右が検査対象の信号}
+  \caption[ハードウェア実装による遅延計測のキャプチャー画像]{\shortstack{左がオリジナルの信号、右が検査対象の信号\\ハードウェア実装による遅延計測のキャプチャー画像}}
   \label{fig:evaluate-delay-hardware}
 \end{figure}
 
 % \section{YCbCr 4:2:0}
 % あああ
 
-ソフトウェア実装による遅延時間の計測結果を、表~\ref{tb:evaluate-software-delay}に示す。
+ソフトウェア実装による遅延時間の計測の様子を図~\ref{fig:evaluate-delay-software-1}と図~\ref{fig:evaluate-delay-software-2}に示す。
+また、計測結果を表~\ref{tb:evaluate-software-delay}に示す。
 ハードウェアよりも遅延が多く、計測回数によってばらつきがあることが分かる。
 遅延フレームの平均は6フレームとなり、30FPSでは199.99msとなる。
 これは、\ref{chap:network-transmission}章で述べた、性能要件となる133.33msの遅延よりも多く、ソフトウェアによる実装では、映像制作現場に適さないことが分かる。
@@ -196,7 +197,7 @@
   \end{tabular}\end{center}
 \end{table}
 
-ハードウェアでは5回計測を行ったが、すべて0フレームであった。
+ハードウェア実装による遅延時間の計測を5回行ったが、遅延フレームはすべて0フレームであった。
 計測環境の制限から遅延は1フレーム以内であるという結果になった。
 性能要件となる遅延時間よりも短く、ハードウェアによる実装では、映像制作現場におけるIP伝送装置として優位であることが分かる。
 
@@ -205,3 +206,5 @@
 % 付録\ref{chap:orf2015}、付録\ref{chap:orf2016}
 
 \section{考察}
+
+ハードウェアによる実装では、YCbCr 4:2:0方式が使えるに加え、

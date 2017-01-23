@@ -11,11 +11,14 @@
 4K映像の帯域は2K映像と比較すると約4倍、現行のハイビジョン放送と比較すると約8倍にもなり、伝送方法とそのコストが課題である。
 そのため、映像業界では、映像機器と比べて比較的安価なネットワークリソースを活用して伝送する、Video over IP化が進んでいる。
 
-本研究では、汎用的なビデオインターフェースであるHDMIから、映像をIPパケット化し、非圧縮の4K映像を伝送するシステムを設計、実装し、ネットワーク活用した映像伝送システムについて、評価?を行う。% また、ネットワークスイッチによるルーティング、ブロードキャストなどについて検証を行う。
+本研究では、実装を行うために必要となる、映像制作現場におけるIP伝送装置の性能要件を調査した。調査では映像の遅延が133.33msまでであれば「遅延を許容できる」と回答した人が9割であった。
+汎用的なビデオインターフェースであるHDMIから、映像をIPパケット化し、非圧縮の4K映像を伝送するシステムを設計、実装する。
 
 本研究では、4K映像キャプチャーボード、10Gbpsネットワークインターフェースカードを備えた汎用的なコンピューターで実装したソフトウェアと、Xilinxの7-Series FPGAボードで実装したハードウェアの両方を実装した。
 
-評価として、4K非圧縮映像の伝送を行う既製品であるPFU QG70、実装したソフトウェア、実装したハードウェアのそれぞれにおいて遅延、重さ、XXXを計測し、XXXという結果となった。
+評価として、実装したソフトウェア、実装したハードウェアのそれぞれにおいてトラフィック、遅延を計測した。
+ソフトウェアではおよそ199.99msの遅延があるが、ハードウェアでは33ms以内の遅延となった。
+これにより、映像制作現場においてFPGAによるハードウェア実装は優位であるが、ソフトウェア実装では活用しにくい事がわかった。
 
 \end{jabstract}
 
@@ -27,8 +30,14 @@ In recent years, the spread of 4K / 8K images is accelerating all over the world
 The bandwidth of 4K video is about 4 times as compared with 2K video, and it is about 8 times as compared with the current high vision broadcasting, and the transmission method and its cost are the issues.
 For this reason, in the video industry, Video over IP is advancing, utilizing relatively inexpensive network resources compared to video equipment, to transmit.
 
-In this research, we evaluate video transmission system using network using HDMI which is a general-purpose video interface, designing and implementing a system for IP packetizing video, transmitting uncompressed 4K video, and implementing it.
+In this research, we investigated the performance requirements of the IP transmission equipment at the video production site, which is necessary for implementation. In the survey, 90% of people responded that "Delay can be tolerated" if the delay of video is up to 133.33 ms.
+We design and implement a system for propagating video packets to IP packets, uncompressed 4K video from HDMI which is a versatile video mixer.
 
-And we implemented both software implemented on a general-purpose computer equipped with 4K video capture board and 10 Gbps network interface card and hardware implemented with Xilinx's 7-Series FPGA board.
+In this research, we implemented both software implemented with a general-purpose computer equipped with 4K video capture board and 10 Gbps network interface card and hardware implemented with Xilinx 7 series FPGA board.
+
+As evaluation, track fix and delay were measured for each of the implemented software and the installed hardware.
+In software it has a delay of 199.99 ms, but with hardware the delay is within 33 ms.
+
+As a result, hardware implementation by FPGA is dominant at video production site, but it turned out that it is easy to utilize by software implementation.
 
 \end{eabstract}
