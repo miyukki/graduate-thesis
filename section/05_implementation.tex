@@ -121,13 +121,17 @@ FIFOに映像データだけを書き込んだ場合、ラインの終了、フ�
   \begin{tabular}{l|c|l}
     \hline
     Name   & Width     & Description \\\hline\hline
-    tdata  & 3*BPC\footnote{Max Bits Per Component}*PPC\footnote{Pixels Per Clock} & Data \\\hline
+    tdata  & 3*BPC\footnotemark[3]*PPC\footnotemark[4] & Data \\\hline
     tlast  & 1         & End of line \\\hline
     tready & 1         & Ready \\\hline
     tuser  & 1         & Start of frame \\\hline
     tvalid & 1         & Valid \\\hline
   \end{tabular}\end{center}
 \end{table}
+
+\footnotetext[3]{Max Bits Per Component}
+\footnotetext[4]{Pixels Per Clock}
+% {\footnotemark\newcounter{footnotebuffer}\setcounter{footnotebuffer}{\thefootnote}}
 
 % どちらもAxi4-Stream規格での通信となるが、
 
