@@ -6,9 +6,8 @@
 
 \section{概要}
 
-\ref{chap:software-experimentation}章と\ref{chap:implementation}章で実装したIP伝送装置を動作させ、それぞれの項目について評価を行う。
-
-% AAA
+\ref{chap:software-experimentation}章と\ref{chap:implementation}章で実装したIP伝送装置を動作させる。
+\ref{chap:network-transmission}章で性能要件としてあげた、トラフィックと遅延の2つの項目において計測手法をまとめ、計測結果とともに考察をまとめる。
 
 \section{トラフィック}
 
@@ -25,7 +24,7 @@
 
 図\ref{fig:lo-bytes-graph}で示した受信バイトのグラフでは、平均489MBpsとなっている。
 ソフトウェア実装での映像データはYCbCr 4:2:2の色深度が16bitであるため、ピクセルあたり2bytesとなる。% また、フレームレートは30Pである。
-理想的な1秒あたりの受信バイト数は、次のように求められる。
+理想的な1秒あたりの映像データのバイト数は、次のように求められる。
 
 \[ 3840 * 2160 * 2 * 30 = 497664000 \]
 
@@ -36,14 +35,13 @@
 
 図\ref{fig:enp2s0f1-packets-graph}で示した受信パケットのグラフでは、パケットがドロップしている事が確認できる。
 これは、カーネルのネットワーク処理が、FPGAのハードウェアによる出力の速度に追いつけなかったためだと考えられる。
-ハードウェア実装での映像データはYUV 422でピクセルあたり12bitとなる。
-理想的な1秒あたりの受信バイト数は、次のように求められる。
+ハードウェア実装での映像データはYUV 422でピクセルあたり12bitとなる。しかしピクセルは32
+理想的な1秒あたりの映像データのバイト数は、次のように求められる。
 
-\[ 3840 * 2160 * 3 / 2 * 30 = 373248000 \]
-
+\[ 3840 * 2160 * 2 * 30 = 497664000 \]
 % 176*5437845 = 957060720
 
-1パケットあたりの平均バイト数は、次のように求められる。
+カーネルが処理した1パケットあたりの平均バイト数は、次のように求められる。
 
 \[ 694800066.36 / 5437845.10 = 127.77 \]
 
@@ -51,9 +49,21 @@
 
 \[ (5437845.10 + 1494269.10) * 127.77 = 885716231 \]
 
-127.77-56
+また、パケットにはヘッダーとフッターが56bytes存在しているため、受信バイトのうち有効データ率は、次のように求められる。
 
-0.5617
+\[ 1-(56/127.77) = 0.5617 \]
+
+\[ 885716231 * 0.5617 = 497506806 \]
+
+となり、おおよそ理想的な1秒あたりの映像データのバイト数と一致する。
+数内、図\ref{fig:enp2s0f1-packets-graph}でも読み取れる、同期区間
+
+% 127.77-56
+%
+% 11/16
+% 5*8
+
+% 0.5625
 
 % 694800066.36/(5437845.10-1494269.10) = 176.bytes
 
@@ -71,7 +81,6 @@
 % 1-(14/127.77)=0.890
 % 1-(56/127.77)=0.561
 
-\newpage
 \begin{figure}[htbp]
   \begin{center}
     \includegraphics[bb=0 0 597 374,width=11.8cm]{img/lo-bytes-graph.png}
@@ -88,7 +97,6 @@
   \label{fig:lo-packets-graph}
 \end{figure}
 
-\newpage
 \begin{figure}[htbp]
   \begin{center}
     \includegraphics[bb=0 0 597 374,width=11.8cm]{img/enp2s0f1-bytes-graph.png}
@@ -109,7 +117,7 @@
 \newpage
 \section{遅延}
 
-遅延を計測した
+本節では、実装したIP伝送装置で映像制作現場において許容できる遅延の範囲内かを顕彰するために、遅延を計測する環境を用意し、発生する遅延を計測した。
 
 \subsection{計測手法}
 
@@ -130,9 +138,10 @@
   \label{fig:evaluate-diagram}
 \end{figure}
 
-\subsection{計測結果}
+キャプチャーした瞬間によっては、IP伝送装置のタイミングにより遅延のバラ付きが出る可能性があるため、5回計測を行う。
+テスト信号は4K 29.97Pである。
 
-aaa
+\subsection{計測結果}
 
 \begin{figure}[htbp]
   \begin{center}
@@ -158,34 +167,33 @@ aaa
   \label{fig:evaluate-delay-hardware}
 \end{figure}
 
-\section{YCbCr 4:2:0}
-あああ
+% \section{YCbCr 4:2:0}
+% あああ
 
+ソフトウェア実装による遅延時間の計測結果を、表\ref{tb:evaluate-software-delay}に示す。
+ハードウェアよりも遅延が多く、計測回数によってばらつきがあることが分かる。
+遅延フレームの平均は6フレームとなり、30FPSでは199.99msとなる。
+これは、\ref{chap:network-transmission}章で述べた、性能要件となる133.33msの遅延よりも多く、ソフトウェアによる実装では、映像制作現場に適さないことが分かる。
 
-% \begin{table}[htbp]
-%   \caption{ソフトウェア実装による30FPSにおける遅延時間}
-%   \label{tb:pg235-vin-axi4-stream}
-%   \begin{center}
-%   \begin{tabular}{l|c|c}
-%     \hline
-%          & 遅延時間  & 遅延フレーム \\\hline\hline
-%     1回目 & 300 ms  & 9 frames \\\hline
-%     1回目 & 300 ms  & 9 frames \\\hline
-%     1回目 & 300 ms  & 9 frames \\\hline
-%     1回目 & 300 ms  & 9 frames \\\hline
-%     1回目 & 300 ms  & 9 frames \\\hline
-%     1回目 & 300 ms  & 9 frames \\\hline
-%     1回目 & 300 ms  & 9 frames \\\hline
-%     1回目 & 300 ms  & 9 frames \\\hline
-%     1回目 & 300 ms  & 9 frames \\\hline
-%     1回目 & 300 ms  & 9 frames \\\hline
-%     1回目 & 300 ms  & 9 frames \\\hline
-%     1回目 & 300 ms  & 9 frames \\\hline
-%     1回目 & 300 ms  & 9 frames \\\hline
-%     1回目 & 300 ms  & 9 frames \\\hline\hline
-%     平均  & 300 ms  & 9 frames \\\hline
-%   \end{tabular}\end{center}
-% \end{table}
+\begin{table}[htbp]
+  \caption{ソフトウェア実装による30FPSにおける遅延時間の計測結果}
+  \label{tb:evaluate-software-delay}
+  \begin{center}
+  \begin{tabular}{l|r}
+    \hline
+     計測回数 & 遅延フレーム \\\hline\hline
+     1回目 & 6フレーム   \\\hline
+     2回目 & 6フレーム   \\\hline
+     3回目 & 3フレーム   \\\hline
+     4回目 & 7フレーム   \\\hline
+     5回目 & 9フレーム   \\\hline\hline
+      平均 & 6フレーム   \\\hline
+  \end{tabular}\end{center}
+\end{table}
+
+ハードウェアでは5回計測を行ったが、すべて0フレームであった。
+計測環境の制限から遅延は1フレーム以内であるという結果になった。
+性能要件となる遅延時間よりも短く、ハードウェアによる実装では、映像制作現場におけるIP伝送装置として優位であることが分かる。
 
 % \section{実証実験}
 % 本実装に実用性があることを顕彰するため、ORF2015とORF2016でそれぞれ実証実験を行った。
