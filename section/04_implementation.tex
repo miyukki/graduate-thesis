@@ -41,7 +41,7 @@ IPパケットを折り返しする装置について、IP伝送装置と直接�
 
 \section{FPGAの回路設計}
 
-本実装は、Xilinxが提供しているKintex-7シリーズ向けのHDMI 2.0のリファレンス実装であるxapp1287\cite{xilinx-xapp1287}をベースとている。
+本実装は、Xilinxが提供しているKintex-7シリーズ向けのHDMI 2.0のリファレンス実装であるxapp1287\cite{xilinx-xapp1287}をベースとしている。
 Xilinxの提供するIPである10 Gigabit Ethernet Subsystem\cite{xilinx-pg157}、Video PHY Controller\cite{xilinx-pg230}、HDMI 1.4/2.0 Transmitter Subsystem\cite{xilinx-pg235}、及び、HDMI 1.4/2.0 Receiver Subsystem\cite{xilinx-pg236}、FIFO Generator\cite{xilinx-pg057}が使用されている。
 本研究のために新たに実装をした箇所は、これらのIPに対してデータを受け渡しするモジュールとそのモジュールを含んだEthlogic Subsystemである。
 FPGAの回路全体のブロックダイアグラムを図~\ref{fig:fpga-whole-diagram}に示す。なお、IP伝送装置に関係するモジュールのみを掲載している。
