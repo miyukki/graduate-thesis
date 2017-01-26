@@ -39,16 +39,36 @@
 
 送信プログラムでは、キャプチャーボードのデータをBlackmagic DeckLink SDK\cite{bmd-decklink-sdk}を用いて取得し、IP経由で伝送するプログラムを作成した。
 受信プログラムでは、IP経由で受信したデータをLinux汎用的なメディアプレーヤーであるmplayerで再生するプログラムを作成した\cite{bmd-4k-streaming}。
+今回はダークファイバー環境での想定であり、順序制御、再送制御の実装を省くため、TCPで実装を行った。
+
+ソフトウェア全体のブロックダイアグラムを図~\ref{fig:software-whole-diagram}に示す。
+
+\begin{figure}[htbp]
+  \begin{center}
+    \includegraphics[bb=0 0 498 352,width=14cm]{img/software-whole-diagram.pdf}
+  \end{center}
+  \caption{ソフトウェア全体のブロックダイアグラム}
+  \label{fig:software-whole-diagram}
+\end{figure}
+
+送信PCでは映像データをDeckLink SDK経由で処理する。キャプチャーボードとSDKの仕様によりデータはフレーム単位でしか処理することができない。
+この時点で1フレームの遅延の発生が懸念される。
+受信プログラムでは、映像データをTCPパケット化して送信する。送信するためのネットワークインターフェースの制御はカーネルに依存する。
+
+受信PCでは、ネットワークインターフェースから受信したTCPパケットを、受信プログラムで処理する。
+受信した映像データをLinuxの汎用プレーヤーであるmplayerに受け渡し、画面上で映像が再生される。
+VRAMの操作やビデオカードによる出力を行っていないた。この時点でもOSのタイミングで描画されるため、1フレーム程の遅延の発生が懸念される。
+
 % ここは後ほど詳細を記述する。
 
 % \section{考察}
 
-ソフトウェアによる実装ではいくつかの改善点がある。
-今回の評価ではダークファイバー環境での想定のため、順序制御、再送制御の実装を省くため、TCPで実装を行った。
+% ソフトウェアによる実装ではいくつかの改善点がある。
 
+\newpage
 \section{ハードウェアによる実装}
 
-\subsection{実装の概要}
+% \subsection{実装の概要}
 
 IP伝送装置は、Xilinx KC705 評価ボード\cite{xilinx-kc705}、HDMIインターフェースカードであるTED HDMI 2.0 FMCカード\cite{ted-hdmi4k}を使用した。
 本実装の構成を図~\ref{fig:fpga-implement-flow}に示す。
@@ -68,16 +88,6 @@ IP伝送装置は、Xilinx KC705 評価ボード\cite{xilinx-kc705}、HDMIイン
   \caption{TED HDMI 2.0 FMCカード (TB-FMCH-HDMI4K)}
   \label{fig:ted-4k-fmc-card}
 \end{figure}
-
-% \begin{table}[htbp]
-%   \caption{ハードウェアによる実装を行ったPCの構成}
-%   \label{tb:software-specification}
-%   \begin{center}
-%   \begin{tabular}{c||c}
-%     \hline
-%     ソフトウェア  & Vivado 2016.2 \\\hline
-%   \end{tabular}\end{center}
-% \end{table}
 
 今回の構成では、IP伝送装置とは別に1台のXilinx KC705 評価ボード、Quad SFP/SFP+カードを用いて、送信したIPパケットを折り返しする装置を使用した。
 IPパケットを折り返しする装置について、IP伝送装置と直接の関係はないため、ここでの解説は割愛する。
@@ -119,7 +129,7 @@ FPGAの回路全体のブロックダイアグラムを図~\ref{fig:fpga-whole-d
 互いの基準クロックが異なるため、データをそのまま受け渡しすることはできない。
 
 この問題を解決するため、読み書きで独立したクロックに対応したIndependent Clocking FIFOをFIFO Generatorで作成する。
-今回のIP伝送装置の送信側で用いた、FIFOのモジュールを図~\ref{fig:fpga-independent-clocking-fifo}に示す。
+今回のIP伝送装置の送信側で用いた、FIFOモジュールを図~\ref{fig:fpga-independent-clocking-fifo}に示す。
 
 \begin{figure}[htbp]
   \begin{center}
@@ -134,7 +144,8 @@ Video Processing Subsystemは300MHzで35bitのデータを書き込み、10 Giga
 10 Gigabit Ethernet Subsystemのクロックが早いため、FIFOがフル状態になることはない。
 また、almost\_emptyフラグを使用しており、emptyになる1クロック前に知ることが可能である。
 
-送信側のモジュールの接続を図~\ref{fig:fpga-video-ethernet-diagram}に示す。
+\newpage
+これまでに解説したモジュールの組み合わせについて、送信側の接続を図~\ref{fig:fpga-video-ethernet-diagram}に示す。
 
 \begin{figure}[htbp]
   \begin{center}
@@ -144,7 +155,7 @@ Video Processing Subsystemは300MHzで35bitのデータを書き込み、10 Giga
   \label{fig:fpga-video-ethernet-diagram}
 \end{figure}
 
-受信側のモジュールの接続を図~\ref{fig:fpga-ethernet-video-diagram}に示す。
+同様に受信側の接続を図~\ref{fig:fpga-ethernet-video-diagram}に示す。
 
 \begin{figure}[htbp]
   \begin{center}
@@ -176,59 +187,11 @@ FIFOに映像データだけを書き込んだ場合、ラインの終了、フ�
 
 \footnotetext[3]{Max Bits Per Component}
 \footnotetext[4]{Pixels Per Clock}
-% {\footnotemark\newcounter{footnotebuffer}\setcounter{footnotebuffer}{\thefootnote}}
-
-% どちらもAxi4-Stream規格での通信となるが、
-
-% 表~\ref{tb:pg236-vout-axi4-stream}
-% 表~\ref{tb:pg235-vin-axi4-stream}
-
-% Axi4-Stream、tuser
-% 図~\ref{fig:fpga-video-ethernet-diagram}
-% 図~\ref{fig:fpga-ethernet-video-diagram}
-
-% Xilinxの 10 Gigabit Ethernet Subsystem、及び、Video Processing Subsystem
-% これを解決するため、Xilinxの 10 Gigabit Ethernet Subsystem、及び、Video Processing Subsystem
-
-
-% また、
-
-% 10 Gigabit Ethernet Subsystemの挙動に空いては、Xilinx PG157\cite{xilinx-pg157}を参照されたし。
-% \cite{xilinx-pg235}
-% \cite{xilinx-pg236}
-
-% \begin{table}[htbp]
-%   \caption{HDMI RX SubsystemのAxi4-Streamインターフェース \cite{xilinx-pg236}より抜粋}
-%   \label{tb:pg236-vout-axi4-stream}
-%   \begin{center}
-%   \begin{tabular}{l|c|c|l}
-%     \hline
-%     Name   & Direction & Width     & Description \\\hline\hline
-%     tdata  & Output    & 3*BPC\footnote{Max Bits Per Component}*PPC\footnote{Pixels Per Clock} & Data \\\hline
-%     tlast  & Output    & 1         & End of line \\\hline
-%     tready & Input     & 1         & Ready \\\hline
-%     tuser  & Output    & 1         & Start of frame \\\hline
-%     tvalid & Output    & 1         & Valid \\\hline
-%   \end{tabular}\end{center}
-% \end{table}
-%
-%
-% \begin{table}[htbp]
-%   \caption{HDMI TX SubsystemのAxi4-Streamインターフェース \cite{xilinx-pg235}より抜粋}
-%   \label{tb:pg235-vin-axi4-stream}
-%   \begin{center}
-%   \begin{tabular}{l|c|c|l}
-%     \hline
-%     Name   & Direction & Width     & Description \\\hline\hline
-%     tdata  & Input     & 3*BPC*PPC & Data \\\hline
-%     tlast  & Input     & 1         & End of line \\\hline
-%     tready & Output    & 1         & Ready \\\hline
-%     tuser  & Input     & 1         & Start of frame \\\hline
-%     tvalid & Input     & 1         & Valid \\\hline
-%   \end{tabular}\end{center}
-% \end{table}
 
 図~\ref{fig:fpga-video-packet}に、本実装で用いたUDPデータの構造を示す。
+UDPデータの映像データより前のヘッダー区間は6bytesとなっている。
+これは、FPGA内部でEthernetパケットを構築していくと、データの先頭6bytesが丁度1クロックで送る64bitの区切り目となるためであり、FPGAで処理する際に効率が良い。
+UDPのパケットはFIFOにデータがある間生成され続けるため、IPパケット上の長さは0としている。映像データによってはジャンボフレームとなる場合もある。
 
 \begin{figure}[htbp]
   \begin{center}
@@ -238,12 +201,7 @@ FIFOに映像データだけを書き込んだ場合、ラインの終了、フ�
   \label{fig:fpga-video-packet}
 \end{figure}
 
-UDPデータの映像データより前のヘッダー区間は6bytesとなっている。
-これは、FPGA内部でEthernetパケットを構築していく際に、データの先頭6bytesが丁度64bitの区切り目となるためであり、FPGAで処理する祭に効率が良い。
-UDPのパケットはFIFOにデータがある間生成され続けるため、IPパケット上の長さは0としている。映像データによってはジャンボフレームとなる場合もある。
-
-各モジュールで映像データがどのように扱われるかを波形イメージとして、図~\ref{fig:fpga-first-pixel-waveform}に示す。
-
+各モジュールで映像データがどのように扱われるかの波形イメージを、図~\ref{fig:fpga-first-pixel-waveform}に示す。
 HDMI 1.4/2.0 Receiver Subsystemから出力されるデータは、v\_axi4s\_vid2fifo.vによって、1クロック遅れてFIFOに書き込まれる。
 FIFOはある程度のバッファリングが行われるため、一定クロック経過後にemptyが立ち下がり、データが読み取れる状態となる。
 v\_axi4s\_fifo2eth.vによって、emptyの立ち下がりの1クロック遅れで、Ethernet、IP、UDPヘッダーの生成を行う。ヘッダーの生成中にも映像データがFIFOにたまり続ける。
@@ -260,26 +218,42 @@ v\_axi4s\_fifo2eth.vによって、emptyの立ち下がりの1クロック遅れ
   \label{fig:fpga-first-pixel-waveform}
 \end{figure}
 
-% 図~\ref{fig:fpga-ila-fifo-to-eth}、
-図~\ref{fig:fpga-ila-hdmi}では、本実装を稼働させたときのILA（Integrated Logic Analyzer）とよばれる、FPGAの内部信号をモニターするためのツールを使った際に、HDMIの入力と出力を検証した様子である。
+図~\ref{fig:fpga-ila-fifo-to-eth}と図~\ref{fig:fpga-ila-hdmi}は、本実装を稼働させたときのILA\footnote{Integrated Logic Analyzer}と呼ばれるFPGAの内部信号をモニターするためのツールを使った際に、HDMIの入力と出力を検証した様子である。
+
+図~\ref{fig:fpga-ila-fifo-to-eth}は、10 Gigabit Ethernet Subsystemのクロックドメインでのデータの様子である。
+v\_axi4s\_fifo2eth.vで送信用のFIFOからデータを読み取り、実際にデータを送信し、折り返し受信したデータをv\_axi4s\_eth2fifo.vで受信用のFIFOに書き込む状態である。
+実際に送受信をしているため、数クロック程度の遅延があることが確認できる。
+
+図~\ref{fig:fpga-ila-hdmi}は、Video Processing Subsystemのクロックドメインでのデータの様子である。
 前述の通り、almost\_emptyの立ち下がりを合図に、パケットを生成してから映像データを書き込むまでに一定のクロックが経過するため、FIFOへの書き込みがバッファリングされる。
 hdmi\_rx\_tvalidが頻繁に立ち上がりと立ち下がりを繰り返しているのに対し、hdmi\_tx\_tvalidはある程度まとまった周期で立ち上がりをしている様子が確認できる。
 
-% \begin{figure}[htbp]
-%   \begin{center}
-%     \includegraphics[bb=0 0 1201 438,width=15.5cm]{img/fpga-ila-fifo-to-eth.png}
-%   \end{center}
-%   \caption{ILAによるIP伝送時のFIFOとEthernet Subsystemのデータのダンプ}
-%   \label{fig:fpga-ila-fifo-to-eth}
-% \end{figure}
+最後に、表~\ref{tb:fpga-post-implementation-utilization}に、論理合成後のFPGAのリソース使用状況について示す。
 
 \begin{figure}[htbp]
+  \begin{minipage}{0.6\hsize}
+  \begin{center}
+    \includegraphics[bb=0 0 1199 438,width=22.5cm,angle=270]{img/fpga-ila-fifo-to-eth.png}
+  \end{center}
+  \caption{ILAによるIP伝送時のFIFOとEthernet Subsystemのデータのダンプ}
+  \label{fig:fpga-ila-fifo-to-eth}
+  \end{minipage}
+  \begin{minipage}{0.4\hsize}
   \begin{center}
     \includegraphics[bb=0 0 1199 246,width=22.5cm,angle=270]{img/fpga-ila-hdmi.png}
   \end{center}
   \caption{ILAによるIP伝送時のHDMI入出力のデータのダンプ}
   \label{fig:fpga-ila-hdmi}
+  \end{minipage}
 \end{figure}
+%
+% \begin{figure}[htbp]
+%   \begin{center}
+%     \includegraphics[bb=0 0 1199 246,width=22.5cm,angle=270]{img/fpga-ila-hdmi.png}
+%   \end{center}
+%   \caption{ILAによるIP伝送時のHDMI入出力のデータのダンプ}
+%   \label{fig:fpga-ila-hdmi}
+% \end{figure}
 
 % \begin{figure}[htbp]
 %     \begin{center}
@@ -288,9 +262,6 @@ hdmi\_rx\_tvalidが頻繁に立ち上がりと立ち下がりを繰り返して�
 %     \caption{図~\ref{fig:fpga-ila-hdmi}を拡大した}
 %     \label{fig:fpga-ila-hdmi-x2}
 % \end{figure}
-
-% \section{まとめ}
-% あああ
 
 \begin{table}[htbp]
   \caption{論理合成後のリソース使用状況}
@@ -311,3 +282,11 @@ hdmi\_rx\_tvalidが頻繁に立ち上がりと立ち下がりを繰り返して�
     PLL      &      1 &     10 & 10.00\% \\\hline
   \end{tabular}\end{center}
 \end{table}
+
+\newpage
+\section{まとめ}
+本章では、映像制作現場におけるIP伝送装置の要件について評価するため、4K映像を非圧縮IP伝送をするシステムをソフトウェアとハードウェアで設計と実装を行った。
+ハードウェア実装とソフトウェア実装で互換性のある設計にはなっていないため、相互を組み合わせることはできない。
+
+次章では、これらの実装を実際に評価する。
+% ソフトウェアとハードウェアで同じ、その内容について述べる。
