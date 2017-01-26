@@ -136,7 +136,7 @@ YUV 4:2:0では、輝度信号は1ピクセル毎、色差信号は4ピクセル
 
 \subsection{VGA}
 VGA（Video Graphics Array）は、IBMが発表したアナログ映像信号の伝送規格、または、同社が開発したVGA表示回路用のチップのことを指す。
-DE-15コネクタを使用し、赤、緑、青、垂直同期、水平同期の5つのアナログ信号で映像を伝送することができる。
+一般的にDE-15コネクタを使用し、赤、緑、青、垂直同期、水平同期の5つのアナログ信号で映像を伝送する。
 DDC（VESA Display Data Channel）信号を使用することで、接続機器の対応する解像度を送信することができ、最近では1080pの映像を伝送する機器も多い。
 PCでの映像出力方式として普及したが、アナログ信号であることや、音声伝送の手段が別途必要となるため、HDMIやDisplayPortなどのインターフェースに移行が進んでいる。
 
@@ -235,6 +235,38 @@ BNC端子を使用することが一般的であり、抜け落ち防止のた�
 解像度や帯域に応じて、SD-SDI、HD-SDI、3G-SDI、6G-SDI、12G-SDIなど複数の規格が定められている。
 また、4K・8K映像を伝送するために、HD-SDIや3G-SDIを2本1組や4本1組で使用して伝送する規格も定められている。
 
+\section{ケーブル}
+本節では、映像制作現場において、よく使われるケーブルについてまとめ、その解説を述べる。
+
+\subsection{同軸ケーブル}
+同軸ケーブルは、そのシンプルさから最もよく使われているケーブルである。SDIの伝送のために用いられることが多く、ケーブルはロック機構のあるBNC端子で終端加工されている。
+その外観を、図~\ref{fig:cable-sdi}に示す。
+
+映像制作現場でカメラと接続する際には、カメラの映像以外にリターンの映像やインターカムなどの信号を載せることが多い。
+その場合、同軸ケーブルでは1本1役となるため、必要な本数の同軸ケーブルを引き回す必要がある。
+
+\subsection{光複合ケーブル}
+光複合ケーブルは、双方向の通信が可能なため、カメラの映像以外にリターンの映像やインターカムなどの信号を載せることが可能である。
+また、電源供給用の銅線もあり、映像制作現場では活用されることが多い。
+その外観を、図~\ref{fig:cable-fiber}に示す。
+
+\begin{figure}[htbp]
+  \begin{minipage}{0.5\hsize}
+    \begin{center}
+      \includegraphics[bb=0 0 949 541,width=6cm]{img/cable-sdi.jpg}
+    \end{center}
+    \caption{同軸ケーブル}
+    \label{fig:cable-sdi}
+  \end{minipage}
+  \begin{minipage}{0.5\hsize}
+    \begin{center}
+      \includegraphics[bb=0 0 450 401,width=6cm]{img/cable-fiber.jpg}
+    \end{center}
+    \caption{光複合ケーブル}
+    \label{fig:cable-fiber}
+  \end{minipage}
+\end{figure}
+
 \section{帯域}
 \label{sec:bandwidth}
 帯域は解像度の他にも、インターレース、色空間、色深度により変化する。
@@ -298,6 +330,7 @@ SMPTE 2022\cite{smpte-2022}は、SMPTEが提唱、標準化したIP伝送規格�
 
 SMPTE 2022-1/2/3/4では、MPEG2圧縮をベースとしたIP伝送について規格化され、SMPTE 2022-5/6では、非圧縮でありSDIのペイロードを基としたIP伝送について規格化されている。
 
+\newpage
 \subsection{SMPTE 2110}
 SMPTE 2110\cite{smpte-2110}は、SMPTEが制定中の規格であり、VSF（Video Services Forum）に提出されたTR03、TR04の内容を取り込んでいる。
 
@@ -338,7 +371,7 @@ NDI\cite{newtek-ndi}は、NewTekが提唱、開発したオープンなIP伝送�
 
 \begin{figure}[htbp]
   \begin{center}
-    \includegraphics[bb=0 0 1294 750,width=14cm]{img/mv-delay-virtual.png}
+    \includegraphics[bb=0 0 1294 750,width=12cm]{img/mv-delay-virtual.png}
   \end{center}
   \caption{今回の実験でWebページ上に再現したマルチビュー映像}
   \label{fig:mv-delay-virtual}
@@ -346,7 +379,7 @@ NDI\cite{newtek-ndi}は、NewTekが提唱、開発したオープンなIP伝送�
 
 \begin{figure}[htbp]
   \begin{center}
-    \includegraphics[bb=0 0 1680 1050,width=14cm]{img/mv-delay-actual.png}
+    \includegraphics[bb=0 0 1680 1050,width=12cm]{img/mv-delay-actual.png}
   \end{center}
   \caption{実際の中継現場で利用されているマルチビュー映像}
   \label{fig:mv-delay-actual}
