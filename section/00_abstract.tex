@@ -25,7 +25,7 @@
 
 実装したソフトウェアとハードウェアについて、理想的なトラフィックを送信しているか、133.33ms以内の遅延を達成しているか、などを計測した。
 トラフィックを計測した結果、ハードウェア実装では理想的なデータを送信していたが、ソフトウェア実装では処理の問題により理想的なデータを送信できていなかった。
-遅延を計測した結果、ソフトウェアとハードウェアではそれぞれ199.99ms、33ms以内の遅延があることがわかった。
+遅延を計測した結果、ソフトウェアとハードウェアではそれぞれ239.99ms以内、33ms以内の遅延があることがわかった。
 この結果から、ソフトウェア実装では映像制作現場において必要な要件を満たせないが、ハードウェア実装ではその要件を満たすことができ、映像制作現場で十分に活用できることがわかった。
 
 % 本研究では、実装を行うために必要となる、映像制作現場におけるIP伝送装置の要件を調査した。調査では映像の遅延が133.33msまでであれば「遅延を許容できる」と回答した人が9割であった。
@@ -49,7 +49,7 @@ For this reason, in the video industry, Video over IP is advancing, utilizing re
 
 In this research, we first examined the composition of video production site and investigated the requirements of IP transmission equipment.
 In order to investigate the tolerance of delay which is one of the requirements, we constructed an experimental environment in which a switcher for video is reproduced on the browser, and drawing is performed with delay added.
-Using this, we conducted a physical exercise experiment of video delay. As a result, 90% of the subjects responded that "delay can be tolerated" until the video delay of 133.33 ms.
+Using this, we conducted a physical exercise experiment of video delay. As a result, 90\% of the subjects responded that "delay can be tolerated" until the video delay of 133.33 ms.
 Therefore, we found that the video delay is desirable to be within 133.33 ms as a requirement of the IP transmission device.
 
 In this research, we designed and implemented a transmission device by software and hardware as an IP transmission device satisfying this requirement.
@@ -58,7 +58,7 @@ In the hardware implementation, an IP transmission device was implemented using 
 
 We measured whether the ideal traffic is being transmitted or delayed within 133.33 ms for the implemented software and hardware.
 As a result of measuring traffic, ideal data was transmitted by hardware implementation, but software implementation was not able to transmit ideal data due to processing problems.
-Also, as a result of delay measurement, it was found that software and hardware had delays of within 199.99 ms and 33 ms respectively.
+Also, as a result of delay measurement, it was found that software and hardware had delays of within 239.99 ms and 33 ms respectively.
 From the results, it was found that at the video production site, software implementation experienced delays, but hardware implementations will not be delayed and can be fully utilized at the video production site.
 
 \end{eabstract}
