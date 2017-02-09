@@ -1,36 +1,60 @@
-<redpen-conf lang="ja" type="zenkaku2">
+<redpen-conf lang="ja">
     <validators>
-        <validator name="SentenceLength"> <!-- 一文の長さが長すぎないかを見る -->
+        <!-- 一文の長さが長すぎないかを見る -->
+        <!-- <validator name="SentenceLength">
             <property name="max_len" value="100"/>
-        </validator>
-        <validator name="CommaNumber"/> <!-- 読点の数が多すぎないかを見る -->
-        <validator name="WordNumber"> <!-- 一文の単語数が多すぎないかを見る -->
+        </validator> -->
+        <!-- 読点の数が多すぎないかを見る -->
+        <validator name="CommaNumber"/>
+        <!-- 一文の単語数が多すぎないかを見る -->
+        <!-- <validator name="WordNumber">
           <property name="max_num" value="60"/>
-        </validator>
-        <validator name="InvalidSymbol"/> <!-- 記号の種類をチェック -->
-        <validator name="KatakanaEndHyphen"/> <!-- カタカナ語の後ろの長音チェック -->
-        <validator name="KatakanaSpellCheck"/> <!-- 非常によく似たカタカナ語が使われていないかをチェック -->
-        <validator name="SectionLength"> <!-- 一節の単語数が多すぎないかを見る -->
+        </validator> -->
+        <!-- 記号の種類をチェック -->
+        <validator name="InvalidSymbol"/>
+        <!-- カタカナ語の後ろの長音チェック -->
+        <validator name="KatakanaEndHyphen"/>
+        <!-- 非常によく似たカタカナ語が使われていないかをチェック -->
+        <validator name="KatakanaSpellCheck"/>
+        <!-- 一節の単語数が多すぎないかを見る -->
+        <!-- <validator name="SectionLength">
             <property name="max_num" value="1500"/>
-        </validator>
-        <validator name="ParagraphNumber"/> <!-- 一節あたりの段落数が多すぎないかを見る -->
-        <validator name="Contraction"/> <!-- 英語の省略形をチェック -->
-        <validator name="SuccessiveWord"/> <!-- 同じ単語が連続して使用されていないか -->
-        <validator name="DuplicatedSection"/> <!-- 節が重複していないかを見る -->
-        <validator name="JapaneseStyle"/> <!-- ですますとであるが混じっていないか -->
-        <validator name="DoubleNegative"/> <!-- 二重否定がないかを見る -->
-        <validator name="FrequentSentenceStart"/> <!-- 頻繁に同じ単語で文を始めていないかを見る -->
-        <validator name="WordFrequency"/> <!-- 単語があまりにも多用されていないかを見る -->
-        <validator name="Hyphenation"/> <!-- ハイフンが必要な単語について，ハイフンが使われているかを見る -->
-        <validator name="WeakExpression"/> <!-- 弱い表現が使われていないかを見る -->
-        <validator name="Okurigana"/> <!-- 送り仮名が正しいか -->
-        <validator name="VoidSection"/> <!-- 空の節が無いか -->
-        <validator name="SectionLevel"/> <!-- 節が深すぎないか -->
-        <validator name="JapaneseAmbiguousNounConjunction"/> <!-- 日本語文の曖昧な名詞接続のパターンを検出 -->
-        <validator name="JapaneseNumberExpression"> <!-- 日本語文の係数表現スタイルが一つ，二つになっているかの確認 -->
+        </validator> -->
+        <!-- 一節あたりの段落数が多すぎないかを見る -->
+        <validator name="ParagraphNumber"/>
+        <!-- 英語の省略形をチェック -->
+        <validator name="Contraction"/>
+        <!-- 同じ単語が連続して使用されていないか -->
+        <validator name="SuccessiveWord"/>
+        <!-- 節が重複していないかを見る -->
+        <validator name="DuplicatedSection"/>
+        <!-- ですますとであるが混じっていないか -->
+        <validator name="JapaneseStyle"/>
+        <!-- 二重否定がないかを見る -->
+        <validator name="DoubleNegative"/>
+        <!-- 頻繁に同じ単語で文を始めていないかを見る -->
+        <validator name="FrequentSentenceStart"/>
+        <!-- 単語があまりにも多用されていないかを見る -->
+        <validator name="WordFrequency"/>
+        <!-- ハイフンが必要な単語について，ハイフンが使われているかを見る -->
+        <validator name="Hyphenation"/>
+        <!-- 弱い表現が使われていないかを見る -->
+        <validator name="WeakExpression"/>
+        <!-- 送り仮名が正しいか -->
+        <validator name="Okurigana"/>
+        <!-- 空の節が無いか -->
+        <validator name="VoidSection"/>
+        <!-- 節が深すぎないか -->
+        <validator name="SectionLevel"/>
+        <!-- 日本語文の曖昧な名詞接続のパターンを検出 -->
+        <validator name="JapaneseAmbiguousNounConjunction"/>
+        <!-- 日本語文の係数表現スタイルが一つ，二つになっているかの確認 -->
+        <validator name="JapaneseNumberExpression">
           <property name="mode" value="kansuji"/>
         </validator>
-        <validator name="SuccessiveSentence"/> <!-- 同一の文が二回連続で出ていないか -->
-        <validator name="DoubledConjunctiveParticleGa"/> <!-- 一文に二回以上，接続助詞の が が出現するとエラーを出力 -->
+        <!-- 同一の文が二回連続で出ていないか -->
+        <validator name="SuccessiveSentence"/>
+        <!-- 一文に二回以上，接続助詞の が が出現するとエラーを出力 -->
+        <validator name="DoubledConjunctiveParticleGa"/>
     </validators>
 </redpen-conf>
